@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kacang_mete/modules/home/pages/home_page.dart';
+import 'package:kacang_mete/common/page/base_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const BasePage(),
     );
   }
 }
