@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,41 +17,79 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          flexibleSpace: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.025,
-              horizontal: screenWidth * 0.025,
-            ),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset('images/logo.jpg'),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.35),
-                  child: TextButton(
-                    onPressed: () => debugPrint('should open datepicker'),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.arrow_back),
-                        Text(_selectedMonth),
-                      ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      'assets/images/logo.jpg',
+                      width: screenWidth * 0.25,
                     ),
                   ),
-                )
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.35),
+                    child: TextButton(
+                      onPressed: () => debugPrint('should open datepicker'),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.arrow_back),
+                          Text(_selectedMonth),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
+            CardOverviewWidget(title: _selectedMonth),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.03,
+                horizontal: screenWidth * 0.025,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Recent Transaction',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: screenWidth * 0.035,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => debugPrint('should see all'),
+                    child: Text("See All"),
+                  )
+                ],
+              ),
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              itemCount: 10,
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: screenHeight * 0.02),
+              itemBuilder: (context, index) {
+                return TransactionItemWidget(
+                  icon: Icons.card_travel,
+                  type: index % 2 == 0
+                      ? TransactionType.pengeluaran
+                      : TransactionType.pemasukan,
+                  item: "Kacang Mete",
+                  ammount: "Rp. 1.000.000",
+                  date: "1 Okt 2023",
+                );
+              },
+            ),
+          ],
         ),
-        SliverToBoxAdapter(
-          child: Column(children: [CardOverviewWidget(title: _selectedMonth)]),
-        )
-      ],
+      ),
     );
   }
 }
