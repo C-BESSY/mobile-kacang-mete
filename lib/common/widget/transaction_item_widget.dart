@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 
 class TransactionItemWidget extends StatelessWidget {
-  final IconData icon;
   final TransactionType type;
   final String item;
   final String ammount;
@@ -10,12 +9,13 @@ class TransactionItemWidget extends StatelessWidget {
 
   const TransactionItemWidget({
     super.key,
-    required this.icon,
     required this.type,
     required this.item,
     required this.ammount,
     required this.date,
   });
+
+  bool get isPengeluaran => type == TransactionType.pengeluaran;
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +26,20 @@ class TransactionItemWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, size: screenWidth * 0.15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Text(type.value),
-              Text(item),
+              Container(
+                  decoration: BoxDecoration(color: Colors.grey.shade300),
+                  child: Icon(isPengeluaran ? Icons.abc : Icons.add_card,
+                      size: screenWidth * 0.10)),
+              SizedBox(width: screenWidth * 0.05),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(type.value, style: TextStyle(fontSize: screenWidth * 0.03, fontWeight: FontWeight.bold),),
+                  Text(item, style: TextStyle(fontWeight: FontWeight.w100, fontSize: 12, color: Colors.grey[600]),),
+                ],
+              ),
             ],
           ),
           Column(
@@ -40,7 +48,7 @@ class TransactionItemWidget extends StatelessWidget {
               Text(
                 ammount,
                 style: TextStyle(
-                  color: type == TransactionType.pengeluaran
+                  color: isPengeluaran
                       ? Colors.red.shade500
                       : Colors.green.shade500,
                 ),
