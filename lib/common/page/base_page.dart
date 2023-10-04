@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/modules/home/pages/home_page.dart';
+import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
 
 class BasePage extends StatefulWidget {
   const BasePage({super.key});
@@ -17,7 +18,7 @@ class _BasePageState extends State<BasePage> {
   final item = [
     const HomePage(),
     const HomePage(),
-    const HomePage(),
+    const TransactionPage(),
   ];
 
   void _onItemTapped(int index) {
