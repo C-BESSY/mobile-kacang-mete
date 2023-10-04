@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+  
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
@@ -24,11 +25,17 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
             child: Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'assets/images/logo.jpg',
-                    width: screenWidth * 0.25,
+                Container(
+                  width: screenWidth * 0.1,
+                  height: screenHeight * 0.1,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                        20), // Adjust the radius as needed
+                    child: Image.asset('assets/images/logo.jpg'),
                   ),
                 ),
                 Padding(
@@ -76,7 +83,6 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: screenHeight * 0.02),
             itemBuilder: (context, index) {
               return TransactionItemWidget(
-                icon: Icons.card_travel,
                 type: index % 2 == 0
                     ? TransactionType.pengeluaran
                     : TransactionType.pemasukan,
@@ -90,4 +96,5 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  
 }
