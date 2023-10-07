@@ -208,5 +208,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.4-beta"
+  wolt_modal_sheet:
+    dependency: "direct main"
+    description:
+      name: wolt_modal_sheet
+      sha256: "25d3f278d50ed9a546b4f1df36a6b0a3e4e6dc76c517ce07b91168f87200543c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
 sdks:
   dart: ">=3.1.3 <4.0.0"
