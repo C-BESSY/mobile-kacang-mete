@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/modules/home/pages/home_page.dart';
+import 'package:kacang_mete/modules/penjualan/pages/penjualan_page.dart';
 import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class BasePage extends StatefulWidget {
   const BasePage({super.key});
@@ -65,8 +67,7 @@ class _BasePageState extends State<BasePage> {
                 ElevatedButton(
                   onPressed: () => debugPrint('child'),
                   child: Container(
-                    color: Colors.blue,
-                    child: Icon(Icons.create),
+                    child: Icon(Symbols.category),
                   ),
                 ),
                 SizedBox(
@@ -74,18 +75,21 @@ class _BasePageState extends State<BasePage> {
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   ElevatedButton(
-                    onPressed: () => debugPrint('child'),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PenjualanPage()));
+                    },
                     child: Container(
-                      color: Colors.blue,
-                      child: Icon(Icons.create),
+                      child: Icon(Symbols.radiology),
                     ),
                   ),
                   SizedBox(width: screenWidth * 0.025),
                   ElevatedButton(
                     onPressed: () => debugPrint('child'),
                     child: Container(
-                      color: Colors.blue,
-                      child: Icon(Icons.create),
+                      child: Icon(Symbols.send_money),
                     ),
                   ),
                 ])
@@ -98,8 +102,8 @@ class _BasePageState extends State<BasePage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.green.shade200,
-        items: [
-          const BottomNavigationBarItem(
+        items: const [
+          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
@@ -107,7 +111,7 @@ class _BasePageState extends State<BasePage> {
             icon: Icon(Icons.add),
             label: 'Create',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.currency_exchange),
             label: 'Transaction',
           ),
