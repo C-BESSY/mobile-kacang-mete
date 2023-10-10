@@ -1,0 +1,135 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:kacang_mete/modules/create/pages/item_page.dart';
+import 'package:kacang_mete/modules/create/pages/pembelian_page.dart';
+import 'package:kacang_mete/modules/home/pages/home_page.dart';
+import 'package:kacang_mete/modules/create/pages/penjualan_page.dart';
+import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+class BasePage extends StatefulWidget {
+  const BasePage({super.key});
+
+  @override
+  State<BasePage> createState() => _BasePageState();
+}
+
+class _BasePageState extends State<BasePage> {
+  int _selectedIndex = 0;
+  bool isCreateOpen = false;
+  
+
+  final item = [
+    const HomePage(),
+    const HomePage(),
+    const TransactionPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    if (index == 1) {
+      setState(() => isCreateOpen = true);
+      return;
+    }
+
+    setState(() {
+      isCreateOpen = false;
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: Stack(children: [
+        item[_selectedIndex],
+        Positioned.fill(
+          child: Visibility(
+            visible: isCreateOpen,
+            child: GestureDetector(
+              onTap: () => setState(() => isCreateOpen = false),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 10,
+          left: 0,
+          right: 0,
+          child: Visibility(
+            visible: isCreateOpen,
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ItemPage()));
+                  },
+                  child: Container(
+                    child: Icon(Symbols.category),
+                  ),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.025,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PenjualanPage()));
+                    },
+                    child: Container(
+                      child: Icon(Symbols.radiology),
+                    ),
+                  ),
+                  SizedBox(width: screenWidth * 0.025),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PembelianPage()));
+                    },
+                    child: Container(
+                      child: Icon(Symbols.send_money),
+                    ),
+                  ),
+                ])
+              ],
+            ),
+          ),
+        ),
+      ]),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.green.shade200,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.currency_exchange),
+            label: 'Transaction',
+          ),
+        ],
+      ),
+    );
+  }
+}
