@@ -106,7 +106,7 @@ class _BasePageState extends State<BasePage> {
                     },
                     child: Container(
                       padding: EdgeInsets.all(15),
-                      child: Icon(Symbols.radiology, color: Colors.white),
+                      child: Icon(Symbols.attach_money, color: Colors.white),
                     ),
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),
