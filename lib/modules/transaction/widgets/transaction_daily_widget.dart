@@ -29,14 +29,14 @@ class TransactionDailyWidget extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(
+                  const Text(
                     "Rp. 1.000.000",
                     style: TextStyle(color: Colors.green),
                   ),
                   SizedBox(
                     width: screenWidth * 0.025,
                   ),
-                  Text(
+                  const Text(
                     "Rp. 1.000.000",
                     style: TextStyle(color: Colors.red),
                   ),
