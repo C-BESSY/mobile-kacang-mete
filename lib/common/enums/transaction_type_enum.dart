@@ -1,4 +1,4 @@
-enum TransactionType { pengeluaran, pemasukan }
+enum TransactionType { pengeluaran, penjualan }
 
 extension TransactionTypeToString on TransactionType {
   String get value {

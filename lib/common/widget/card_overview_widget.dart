@@ -11,10 +11,10 @@ class CardOverviewWidget extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          "Tanggal",
+          "Account Balance",
           style: TextStyle(
             fontWeight: FontWeight.w300,
-            color: Colors.black,
+            color: Colors.grey,
           ),
         ),
         Text(
@@ -31,13 +31,13 @@ class CardOverviewWidget extends StatelessWidget {
             _CardWidget(
               mainColor: Colors.green.shade500,
               title: 'Income',
-              icon: Icons.card_travel,
+              iconPath: 'assets/icons/icon-income.png',
               value: "Rp. 5.000.000",
             ),
             _CardWidget(
               mainColor: Colors.red.shade500,
               title: 'Expense',
-              icon: Icons.card_travel,
+              iconPath: 'assets/icons/icon-expenses.png',
               value: "Rp. 5.000.000",
             ),
           ],
@@ -50,13 +50,13 @@ class CardOverviewWidget extends StatelessWidget {
 class _CardWidget extends StatelessWidget {
   final Color mainColor;
   final String title;
-  final IconData icon;
+  final String iconPath;
   final String value;
 
   const _CardWidget({
     required this.mainColor,
     required this.title,
-    required this.icon,
+    required this.iconPath,
     required this.value,
   });
 
@@ -78,10 +78,7 @@ class _CardWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.add_card,
-              color: Colors.white,
-            ),
+            Image.asset(iconPath),
             SizedBox(
               width: screenWidth * 0.025,
             ),
