@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
+import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_daily_widget.dart';
@@ -13,7 +14,10 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
+  List<String> list = <String>['Harian', 'Mingguan', 'Bulanan', 'Tahunan'];
+
   final String _selectedMonth = "Oktober 2023";
+  late String dropdownValue = list[0];
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +31,25 @@ class _TransactionPageState extends State<TransactionPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () => debugPrint('should open datepicker'),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.arrow_back),
-                      Text("Harian"),
-                    ],
+                DropdownMenu<String>(
+                  enableSearch: false,
+                  initialSelection: list.first,
+                  onSelected: (String? value) {
+                    setState(() {dropdownValue = value!;});
+                    debugPrint(value);
+                  },
+                  menuStyle: MenuStyle(
+                    backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 255, 255, 255)),
+                    shape: MaterialStateProperty.all(null),
                   ),
+                  dropdownMenuEntries:
+                    list.map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(value: value, label: value);
+                    }
+                  )
+                  .toList(),
+                ),
+                const Align(
                 ),
                 TextButton(
                   onPressed: () {
@@ -43,8 +58,8 @@ class _TransactionPageState extends State<TransactionPage> {
                       builder: (BuildContext context) {
                         return Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.white),
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white),
                           height: MediaQuery.of(context).size.height * 0.5,
                           child: Column(
                             children: [
@@ -54,23 +69,25 @@ class _TransactionPageState extends State<TransactionPage> {
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.025),
+                                  horizontal: screenWidth * 0.025),
                                 child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Text(
                                       'Filter Transaction',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),
                                     ),
                                     TextButton(
                                       onPressed: () =>
-                                          debugPrint('should reset'),
+                                        debugPrint('should reset'),
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.grey),
+                                          MaterialStateProperty.all(
+                                            const Color.fromARGB(244, 224, 217, 217)),
                                       ),
                                       child: const Text('Reset'),
                                     ),
@@ -78,77 +95,86 @@ class _TransactionPageState extends State<TransactionPage> {
                                 ),
                               ),
                               ListTile(
-                                title: Text(
+                                title: const Text(
                                   'Sort By',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                trailing: Row(
+                                subtitle: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ElevatedButton(
-                                        onPressed: () {
-                                          debugPrint('Highest');
-                                        },
-                                        child: Text('Highest')),
+                                      onPressed: () {
+                                        debugPrint('Highest');
+                                      },
+                                      child: const Text('Highest',
+                                        style: TextStyle(color: Colors.black)
+                                      )
+                                    ),
                                     ElevatedButton(
-                                        onPressed: () {
-                                          debugPrint('Lowest');
-                                        },
-                                        child: Text('Lowest')),
+                                      onPressed: () {
+                                        debugPrint('Lowest');
+                                      },
+                                      child: const Text('Lowest',
+                                        style: TextStyle(color: Colors.black)
+                                      )
+                                    ),
                                     ElevatedButton(
-                                        onPressed: () {
-                                          debugPrint('Newest');
-                                        },
-                                        child: Text('Newest')),
+                                      onPressed: () {
+                                        debugPrint('Newest');
+                                      },
+                                      child: const Text('Newest',
+                                        style: TextStyle(color: Colors.black)
+                                      )
+                                    ),
                                     ElevatedButton(
-                                        onPressed: () {
-                                          debugPrint('Oldest');
-                                        },
-                                        child: Text('Oldest')),
+                                      onPressed: () {
+                                        debugPrint('Oldest');
+                                      },
+                                      child: const Text('Oldest',
+                                        style: TextStyle(color: Colors.black)
+                                      )
+                                    ),
                                   ],
                                 ),
-                                // onTap: () {
-                                //   Navigator.pop(context);
-                                // },
                               ),
                               const ListTile(
                                 title: (Text('Date',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                              ),
-                              ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(
-                                        Colors.blue[100]),
-                                    textStyle: MaterialStateProperty.all(
-                                        const TextStyle(color: Colors.black)),
-                                  ),
-                                  onPressed: () =>
-                                      debugPrint('should select date'),
-                                  child: const Text(
-                                    'Select Date',
-                                    style: TextStyle(color: Colors.black),
-                                  )),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      const Color.fromARGB(255, 28, 147, 245)),
-                                  textStyle: MaterialStateProperty.all(
-                                      TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 255, 255, 255))),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold)
+                                  )
                                 ),
-                                onPressed: () {
-                                  debugPrint('Should apply filters then close');
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Apply'),
                               ),
-                              // ListTile(
-                              //   subtitle: Text('Pick Date',textAlign: TextAlign.justify),
-                              //   onTap: () {Navigator.pop(context);},2
-                              // ),
-                              // Text('data'),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: const MaterialStatePropertyAll(
+                                        Colors.white),
+                                      textStyle: MaterialStateProperty.all(
+                                        const TextStyle(color: Colors.black)),
+                                    ),
+                                    onPressed: () =>
+                                      debugPrint('should select date'),
+                                    child: const Text(
+                                      'Select Date',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                  Container(margin: const EdgeInsets.only(right: 8),child: Text(_selectedMonth))
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.025),
+                                child: ButtonWidget(
+                                  () {
+                                    debugPrint('ini buat apply + close');
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -169,7 +195,7 @@ class _TransactionPageState extends State<TransactionPage> {
             shrinkWrap: true,
             itemCount: 10,
             separatorBuilder: (context, index) =>
-                SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.02),
             itemBuilder: (context, index) {
               return TransactionDailyWidget(
                 selectedMonth: _selectedMonth,
