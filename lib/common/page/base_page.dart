@@ -1,21 +1,29 @@
 import 'dart:ui';
 
+import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:kacang_mete/modules/create/pages/item_page.dart';
+import 'package:kacang_mete/modules/create/pages/pembelian_page.dart';
 import 'package:kacang_mete/modules/home/pages/home_page.dart';
-import 'package:kacang_mete/modules/penjualan/pages/penjualan_page.dart';
+import 'package:kacang_mete/modules/create/pages/penjualan_page.dart';
 import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class BasePage extends StatefulWidget {
-  const BasePage({super.key});
+  final bool isTransaction;
+  const BasePage({super.key, isTransaction})
+      : isTransaction = isTransaction ?? false;
 
   @override
   State<BasePage> createState() => _BasePageState();
 }
 
 class _BasePageState extends State<BasePage> {
-  int _selectedIndex = 0;
+  late final _pageController;
+  late final _controller;
   bool isCreateOpen = false;
+
+  int get maxCount => item.length;
 
   final item = [
     const HomePage(),
@@ -23,16 +31,17 @@ class _BasePageState extends State<BasePage> {
     const TransactionPage(),
   ];
 
-  void _onItemTapped(int index) {
-    if (index == 1) {
-      setState(() => isCreateOpen = true);
-      return;
-    }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
-    setState(() {
-      isCreateOpen = false;
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.isTransaction ? 2 : 0);
+    _controller = NotchBottomBarController(index: widget.isTransaction ? 2 : 0);
   }
 
   @override
@@ -41,7 +50,11 @@ class _BasePageState extends State<BasePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(children: [
-        item[_selectedIndex],
+        PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: List.generate(item.length, (index) => item[index]),
+        ),
         Positioned.fill(
           child: Visibility(
             visible: isCreateOpen,
@@ -57,7 +70,7 @@ class _BasePageState extends State<BasePage> {
           ),
         ),
         Positioned(
-          bottom: 10,
+          bottom: 100,
           left: 0,
           right: 0,
           child: Visibility(
@@ -65,9 +78,19 @@ class _BasePageState extends State<BasePage> {
             child: Column(
               children: [
                 ElevatedButton(
-                  onPressed: () => debugPrint('child'),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ItemPage()));
+                  },
                   child: Container(
-                    child: Icon(Symbols.category),
+                    padding: EdgeInsets.all(15),
+                    child: Icon(Symbols.category, color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    backgroundColor: Colors.green,
                   ),
                 ),
                 SizedBox(
@@ -82,14 +105,29 @@ class _BasePageState extends State<BasePage> {
                               builder: (context) => const PenjualanPage()));
                     },
                     child: Container(
-                      child: Icon(Symbols.radiology),
+                      padding: EdgeInsets.all(15),
+                      child: Icon(Symbols.radiology, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.blue,
                     ),
                   ),
                   SizedBox(width: screenWidth * 0.025),
                   ElevatedButton(
-                    onPressed: () => debugPrint('child'),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PembelianPage()));
+                    },
                     child: Container(
-                      child: Icon(Symbols.send_money),
+                      padding: EdgeInsets.all(15),
+                      child: Icon(Symbols.send_money, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.red,
                     ),
                   ),
                 ])
@@ -98,25 +136,60 @@ class _BasePageState extends State<BasePage> {
           ),
         ),
       ]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.green.shade200,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Create',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.currency_exchange),
-            label: 'Transaction',
-          ),
-        ],
-      ),
+      extendBody: true,
+      bottomNavigationBar: (item.length <= maxCount)
+          ? AnimatedNotchBottomBar(
+              /// Provide NotchBottomBarController
+              notchBottomBarController: _controller,
+              color: Colors.white,
+              showLabel: false,
+              notchColor: Colors.black87,
+
+              /// restart app if you change removeMargins
+              removeMargins: false,
+              bottomBarWidth: 500,
+              durationInMilliSeconds: 500,
+              bottomBarItems: const [
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.home_filled,
+                    color: Colors.blueGrey,
+                  ),
+                  activeItem: Icon(
+                    Icons.home_filled,
+                    color: Colors.blueAccent,
+                  ),
+                  itemLabel: 'Home',
+                ),
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.star,
+                    color: Colors.blueGrey,
+                  ),
+                  activeItem: Icon(
+                    Icons.star,
+                    color: Colors.blueAccent,
+                  ),
+                  itemLabel: 'Create',
+                ),
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.currency_exchange,
+                    color: Colors.blueGrey,
+                  ),
+                  activeItem: Icon(
+                    Icons.currency_exchange,
+                    color: Colors.blueAccent,
+                  ),
+                  itemLabel: 'Transaction',
+                ),
+              ],
+              onTap: (index) {
+                setState(() => isCreateOpen = index == 1);
+                _pageController.jumpToPage(index);
+              },
+            )
+          : null,
     );
   }
 }
