@@ -211,8 +211,6 @@ class _TransactionPageState extends State<TransactionPage> {
             TransactionYearlyWidget(
               selectedMonth: _selectedMonth,
             ),
-          // },
-          // ),
         ],
       ),
     );

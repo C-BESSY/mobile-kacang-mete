@@ -15,68 +15,54 @@ class TransactionWeeklyWidget extends StatelessWidget {
     final numberOfWeeks = 5;
 
     return Column(
-      children: List.generate(numberOfWeeks, (weekIndex) {
-        final weekNumber = weekIndex + 1;
-        return Column(
-          children: [
-            CardOverviewWidget(
-              title: "$selectedMonth - Week $weekNumber",
-              description: "Transaction Weekly",
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.03,
-                horizontal: screenWidth * 0.025,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Text(
-                      "Week $weekNumber",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: screenWidth * 0.035,
+      children: [
+        CardOverviewWidget(
+          title: "$selectedMonth - Weekly",
+          description: "Transaction Weekly",
+        ),
+        ...List.generate(numberOfWeeks, (weekIndex) {
+          final weekNumber = weekIndex + 1;
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * 0.03,
+                  horizontal: screenWidth * 0.025,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Week $weekNumber",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: screenWidth * 0.035,
+                        ),
                       ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        "Rp. 1.000.000",
-                        style: TextStyle(color: Colors.green),
-                      ),
-                      SizedBox(
-                        width: screenWidth * 0.025,
-                      ),
-                      const Text(
-                        "Rp. 1.000.000",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ],
-                  )
-                ],
+                    Row(
+                      children: [
+                        const Text(
+                          "Rp. 1.000.000",
+                          style: TextStyle(color: Colors.green),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.025,
+                        ),
+                        const Text(
+                          "Rp. 1.000.000",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-            ListView.separated(
-              shrinkWrap: true,
-              itemCount: 2,
-              separatorBuilder: (context, index) =>
-                  SizedBox(height: screenHeight * 0.02),
-              itemBuilder: (context, index) {
-                return TransactionItemWidget(
-                  type: index % 2 == 0
-                      ? TransactionType.pengeluaran
-                      : TransactionType.penjualan,
-                  item: "Kacang Mete",
-                  ammount: "Rp. 1.000.000",
-                  date: "1 Okt 2023",
-                );
-              },
-            ),
-          ],
-        );
-      }),
+            ],
+          );
+        }),
+      ],
     );
   }
 }

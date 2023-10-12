@@ -23,7 +23,7 @@ class TransactionMonthlyWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "1 $selectedMonth",
+                "$selectedMonth",
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: screenWidth * 0.035,
