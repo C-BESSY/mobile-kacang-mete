@@ -3,17 +3,17 @@ import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 
-class TransactionDailyWidget extends StatelessWidget {
+class TransactionYearlyWidget extends StatelessWidget {
   final String selectedMonth;
 
-  const TransactionDailyWidget({super.key, required this.selectedMonth});
+  const TransactionYearlyWidget({super.key, required this.selectedMonth});
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        CardOverviewWidget(title: selectedMonth, description: "coba transaction daily"),
+        CardOverviewWidget(title: "2023", description: "coba transaction yearly"),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,
@@ -23,7 +23,7 @@ class TransactionDailyWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "1 $selectedMonth",
+                "",
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: screenWidth * 0.035,
@@ -49,7 +49,7 @@ class TransactionDailyWidget extends StatelessWidget {
         ),
         ListView.separated(
           shrinkWrap: true,
-          itemCount: 10,
+          itemCount: 2,
           separatorBuilder: (context, index) =>
               SizedBox(height: screenHeight * 0.02),
           itemBuilder: (context, index) {
