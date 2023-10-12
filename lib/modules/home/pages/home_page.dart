@@ -109,6 +109,7 @@ class _HomePageState extends State<HomePage> {
           ),
           ListView.separated(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             itemCount: 10,
             separatorBuilder: (context, index) =>
                 SizedBox(height: screenHeight * 0.02),

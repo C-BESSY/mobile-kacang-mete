@@ -49,93 +49,97 @@ class _BasePageState extends State<BasePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Stack(children: [
-        PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(item.length, (index) => item[index]),
-        ),
-        Positioned.fill(
-          child: Visibility(
-            visible: isCreateOpen,
-            child: GestureDetector(
-              onTap: () => setState(() => isCreateOpen = false),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                child: Container(
-                  color: Colors.black.withOpacity(0.1),
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: List.generate(item.length, (index) => item[index]),
+          ),
+          Positioned.fill(
+            child: Visibility(
+              visible: isCreateOpen,
+              child: GestureDetector(
+                onTap: () => setState(() => isCreateOpen = false),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.1),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          bottom: 100,
-          left: 0,
-          right: 0,
-          child: Visibility(
-            visible: isCreateOpen,
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ItemPage()));
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    child: Icon(Symbols.category, color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    backgroundColor: Colors.green,
-                  ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.025,
-                ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Visibility(
+              visible: isCreateOpen,
+              child: Column(
+                children: [
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const PenjualanPage()));
+                              builder: (context) => const ItemPage()));
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      child: Icon(Symbols.attach_money, color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      backgroundColor: Colors.blue,
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.green,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      child: const Icon(Symbols.category, color: Colors.white),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.025),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const PembelianPage()));
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      child: Icon(Symbols.send_money, color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
-                      backgroundColor: Colors.red,
-                    ),
+                  SizedBox(
+                    height: screenHeight * 0.025,
                   ),
-                ])
-              ],
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PenjualanPage()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        child: const Icon(Symbols.attach_money,
+                            color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(width: screenWidth * 0.025),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PembelianPage()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        child:
+                            const Icon(Symbols.send_money, color: Colors.white),
+                      ),
+                    ),
+                  ])
+                ],
+              ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
       extendBody: true,
       bottomNavigationBar: (item.length <= maxCount)
           ? AnimatedNotchBottomBar(
