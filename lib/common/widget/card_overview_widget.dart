@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class CardOverviewWidget extends StatelessWidget {
   final String title;
-  const CardOverviewWidget({super.key, required this.title});
+  final String description;
+  const CardOverviewWidget({super.key, required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -10,9 +11,9 @@ class CardOverviewWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        const Text(
-          "Account Balance",
-          style: TextStyle(
+        Text(
+          description,
+          style: const TextStyle(
             fontWeight: FontWeight.w300,
             color: Colors.grey,
           ),
@@ -27,6 +28,7 @@ class CardOverviewWidget extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          //NANTI BUAT INI BIAR UNTUK WEEKLY, DLL BISA LAIN LAIN NILAI INCOME & SPENDING NYA
           children: [
             _CardWidget(
               mainColor: Colors.green.shade500,

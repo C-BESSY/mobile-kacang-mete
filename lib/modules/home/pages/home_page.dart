@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
@@ -70,7 +71,10 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          const CardOverviewWidget(title: 'Rp. 9.400.000'),
+          const CardOverviewWidget(
+            title: 'Rp. 9.400.000',
+            description: "Account Balance",
+          ),
           Padding(
             padding: EdgeInsets.symmetric(
               vertical: screenHeight * 0.03,
