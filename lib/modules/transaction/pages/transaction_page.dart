@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
@@ -9,6 +10,7 @@ import 'package:kacang_mete/modules/transaction/widgets/transaction_daily_widget
 import 'package:kacang_mete/modules/transaction/widgets/transaction_weekly_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_monthly_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_yearly_widget.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -19,7 +21,7 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  final String _selectedMonth = "Oktober 2023";
+  String _selectedMonth = "Oktober 2023";
   late TransactionFilterEnum dropdownValue = TransactionFilterEnum.harian;
 
   @override
@@ -34,29 +36,33 @@ class _TransactionPageState extends State<TransactionPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                DropdownMenu<String>(
-                  enableSearch: false,
-                  initialSelection: TransactionFilterEnum.values[0].name,
-                  onSelected: (String? value) {
-                    setState(() {
-                      dropdownValue = value!.transaction;
-                    });
-                    debugPrint(value);
-                  },
-                  menuStyle: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 255, 255, 255)),
-                    shape: MaterialStateProperty.all(null),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenHeight * 0.025),
+                  child: DropdownMenu<String>(
+                    enableSearch: false,
+                    initialSelection: TransactionFilterEnum.values[0].name,
+                    onSelected: (String? value) {
+                      setState(() {
+                        dropdownValue = value!.transaction;
+                      });
+                      debugPrint(value);
+                    },
+                    menuStyle: MenuStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 255, 255, 255)),
+                      shape: MaterialStateProperty.all(null),
+                    ),
+                    dropdownMenuEntries: TransactionFilterEnum.values
+                        .map((val) => val.name)
+                        .toList()
+                        .map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                        value: value,
+                        label: capitalizeWord(value),
+                      );
+                    }).toList(),
                   ),
-                  dropdownMenuEntries: TransactionFilterEnum.values
-                      .map((val) => val.name)
-                      .toList()
-                      .map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                      value: value,
-                      label: capitalizeWord(value),
-                    );
-                  }).toList(),
                 ),
                 const Align(),
                 TextButton(
@@ -163,9 +169,31 @@ class _TransactionPageState extends State<TransactionPage> {
                                     ),
                                     onPressed: () =>
                                         debugPrint('should select date'),
-                                    child: const Text(
-                                      'Select Date',
-                                      style: TextStyle(color: Colors.black),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showMonthPicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                        ).then((date) {
+                                          if (date != null) {
+                                            setState(() {
+                                              _selectedMonth =
+                                                DateFormat('MMMM yyyy')
+                                                    .format(date);
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.expand_more_rounded,
+                                            color: Color.fromARGB(
+                                                255, 156, 7, 255),
+                                          ),
+                                          Text(_selectedMonth),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(

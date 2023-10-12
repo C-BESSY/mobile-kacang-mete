@@ -13,7 +13,7 @@ class TransactionMonthlyWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        CardOverviewWidget(title: selectedMonth, description: "coba transaction monthly"),
+        CardOverviewWidget(title: "2023", description: "Monthly Transaction "),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,
@@ -47,22 +47,22 @@ class TransactionMonthlyWidget extends StatelessWidget {
             ],
           ),
         ),
-        ListView.separated(
-          shrinkWrap: true,
-          itemCount: 2,
-          separatorBuilder: (context, index) =>
-              SizedBox(height: screenHeight * 0.02),
-          itemBuilder: (context, index) {
-            return TransactionItemWidget(
-              type: index % 2 == 0
-                  ? TransactionType.pengeluaran
-                  : TransactionType.penjualan,
-              item: "Kacang Mete",
-              ammount: "Rp. 1.000.000",
-              date: "1 Okt 2023",
-            );
-          },
-        ),
+        // ListView.separated(
+        //   shrinkWrap: true,
+        //   itemCount: 2,
+        //   separatorBuilder: (context, index) =>
+        //       SizedBox(height: screenHeight * 0.02),
+        //   itemBuilder: (context, index) {
+        //     return TransactionItemWidget(
+        //       type: index % 2 == 0
+        //           ? TransactionType.pengeluaran
+        //           : TransactionType.penjualan,
+        //       item: "Kacang Mete",
+        //       ammount: "Rp. 1.000.000",
+        //       date: "1 Okt 2023",
+        //     );
+        //   },
+        // ),
       ],
     );
   }

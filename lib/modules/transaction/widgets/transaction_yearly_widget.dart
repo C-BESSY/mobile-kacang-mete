@@ -13,7 +13,7 @@ class TransactionYearlyWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        CardOverviewWidget(title: "2023", description: "coba transaction yearly"),
+        CardOverviewWidget(title: "2023", description: "Yearly Transaction "),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,

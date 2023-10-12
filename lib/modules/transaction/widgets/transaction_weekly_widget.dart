@@ -18,7 +18,7 @@ class TransactionWeeklyWidget extends StatelessWidget {
       children: [
         CardOverviewWidget(
           title: "$selectedMonth - Weekly",
-          description: "Transaction Weekly",
+          description: "Weekly Transaction",
         ),
         ...List.generate(numberOfWeeks, (weekIndex) {
           final weekNumber = weekIndex + 1;
