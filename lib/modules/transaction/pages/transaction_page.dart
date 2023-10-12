@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
@@ -34,29 +35,43 @@ class _TransactionPageState extends State<TransactionPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                DropdownMenu<String>(
-                  enableSearch: false,
-                  initialSelection: TransactionFilterEnum.values[0].name,
-                  onSelected: (String? value) {
-                    setState(() {
-                      dropdownValue = value!.transaction;
-                    });
-                    debugPrint(value);
-                  },
-                  menuStyle: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 255, 255, 255)),
-                    shape: MaterialStateProperty.all(null),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton2<TransactionFilterEnum>(
+                    isExpanded: true,
+                    hint: Text(
+                      'Select Item',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                    items: TransactionFilterEnum.values
+                        .map((TransactionFilterEnum item) =>
+                            DropdownMenuItem<TransactionFilterEnum>(
+                              value: item,
+                              child: Text(
+                                capitalizeWord(item.name),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    value: dropdownValue,
+                    onChanged: (TransactionFilterEnum? value) {
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                    },
+                    buttonStyleData: const ButtonStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      height: 40,
+                      width: 140,
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 40,
+                    ),
                   ),
-                  dropdownMenuEntries: TransactionFilterEnum.values
-                      .map((val) => val.name)
-                      .toList()
-                      .map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                      value: value,
-                      label: capitalizeWord(value),
-                    );
-                  }).toList(),
                 ),
                 const Align(),
                 TextButton(
