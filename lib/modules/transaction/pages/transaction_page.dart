@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
@@ -10,6 +11,7 @@ import 'package:kacang_mete/modules/transaction/widgets/transaction_daily_widget
 import 'package:kacang_mete/modules/transaction/widgets/transaction_weekly_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_monthly_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_yearly_widget.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -20,7 +22,7 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  final String _selectedMonth = "Oktober 2023";
+  String _selectedMonth = "Oktober 2023";
   late TransactionFilterEnum dropdownValue = TransactionFilterEnum.harian;
 
   @override
@@ -178,9 +180,31 @@ class _TransactionPageState extends State<TransactionPage> {
                                     ),
                                     onPressed: () =>
                                         debugPrint('should select date'),
-                                    child: const Text(
-                                      'Select Date',
-                                      style: TextStyle(color: Colors.black),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showMonthPicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                        ).then((date) {
+                                          if (date != null) {
+                                            setState(() {
+                                              _selectedMonth =
+                                                DateFormat('MMMM yyyy')
+                                                    .format(date);
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.expand_more_rounded,
+                                            color: Color.fromARGB(
+                                                255, 156, 7, 255),
+                                          ),
+                                          Text(_selectedMonth),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
