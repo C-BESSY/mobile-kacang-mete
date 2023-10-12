@@ -1,7 +1,9 @@
+import 'package:kacang_mete/common/utils/helper_util.dart';
+
 enum TransactionType { pengeluaran, penjualan }
 
 extension TransactionTypeToString on TransactionType {
   String get value {
-    return name[0].toUpperCase() + name.substring(1);
+    return capitalizeWord(name);
   }
 }

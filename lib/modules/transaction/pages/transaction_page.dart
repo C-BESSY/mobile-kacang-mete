@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
@@ -52,7 +53,9 @@ class _TransactionPageState extends State<TransactionPage> {
                       .toList()
                       .map<DropdownMenuEntry<String>>((String value) {
                     return DropdownMenuEntry<String>(
-                        value: value, label: value);
+                      value: value,
+                      label: capitalizeWord(value),
+                    );
                   }).toList(),
                 ),
                 const Align(),
