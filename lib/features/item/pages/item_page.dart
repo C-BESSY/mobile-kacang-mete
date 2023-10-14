@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
-import 'package:kacang_mete/modules/create/widget/item_card_widget.dart';
+import 'package:kacang_mete/features/item/widgets/item_card_widget.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key});
