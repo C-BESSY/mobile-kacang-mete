@@ -39,3 +39,7 @@ String formatDate(String inputDate) {
     return 'Invalid Date';
   }
 }
+
+String dateTimeToMonth(DateTime date) {
+  return DateFormat('MMMM yyyy').format(date);
+}
