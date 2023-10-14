@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/features/item/widgets/item_card_widget.dart';
 
-class PenjualanPage extends StatelessWidget {
-  const PenjualanPage({super.key});
+class ItemPage extends StatefulWidget {
+  const ItemPage({super.key});
 
+  @override
+  State<ItemPage> createState() => _ItemPageState();
+}
+
+class _ItemPageState extends State<ItemPage> {
+  final List<ItemCardWidget> arrOfItemCard = [
+    ItemCardWidget(),
+  ];
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -16,16 +25,16 @@ class PenjualanPage extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(-screenWidth * 0.04, 0),
             child: Text(
-              "Penjualan",
+              "Item",
               style: TextStyle(
                 fontSize: screenWidth * 0.04,
               ),
             ),
           ),
         ),
-        backgroundColor: Colors.green.shade300,
+        backgroundColor: Colors.brown.shade800,
       ),
-      backgroundColor: Colors.green.shade300,
+      backgroundColor: Colors.brown.shade800,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
@@ -44,14 +53,14 @@ class PenjualanPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Total',
+                      'Item',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w200,
                       ),
                     ),
                     Text(
-                      'Rp. 0',
+                      'Kacang Mete',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: screenWidth * 0.1,
@@ -62,7 +71,6 @@ class PenjualanPage extends StatelessWidget {
                 ),
               ),
               Container(
-                height: screenHeight * 0.62,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius:
@@ -81,15 +89,16 @@ class PenjualanPage extends StatelessWidget {
                   horizontal: screenWidth * 0.025,
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Form(
                       child: Column(
                         children: [
                           TypeAheadField(
-                            textFieldConfiguration: const TextFieldConfiguration(
-                              autofocus: true,
+                            textFieldConfiguration:
+                                const TextFieldConfiguration(
                               decoration: InputDecoration(
-                                labelText: "Item",
+                                labelText: "Nama Item",
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.search),
                               ),
@@ -111,37 +120,40 @@ class PenjualanPage extends StatelessWidget {
                           SizedBox(
                             height: screenHeight * 0.025,
                           ),
-                          TypeAheadField(
-                            textFieldConfiguration: const TextFieldConfiguration(
-                              decoration: InputDecoration(
-                                labelText: "Jenis",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.search),
-                              ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.025),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Jenis',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0),
+                                ),
+                                TextButton(
+                                  onPressed: () => setState(() {
+                                    arrOfItemCard.add(const ItemCardWidget());
+                                  }),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Color.fromARGB(244, 224, 217, 217)),
+                                  ),
+                                  child: const Text('Tambah'),
+                                ),
+                              ],
                             ),
-                            suggestionsCallback: (pattern) => [
-                              'Kacang Mete',
-                              'Kacang'
-                            ].where((x) => x
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())),
-                            itemBuilder: (context, suggestion) {
-                              return ListTile(
-                                title: Text(suggestion),
-                              );
+                          ),
+                          ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: arrOfItemCard.length,
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: screenHeight * 0.02),
+                            itemBuilder: (context, index) {
+                              final item = arrOfItemCard[index];
+                              return item;
                             },
-                            onSuggestionSelected: (String suggestion) =>
-                                debugPrint(suggestion),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.025,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Jumlah",
-                              border: OutlineInputBorder(),
-                            ),
                           ),
                         ],
                       ),

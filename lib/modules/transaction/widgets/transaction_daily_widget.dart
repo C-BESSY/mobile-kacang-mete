@@ -13,7 +13,8 @@ class TransactionDailyWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        CardOverviewWidget(title: selectedMonth, description: "coba transaction daily"),
+        CardOverviewWidget(
+            title: selectedMonth, description: "coba transaction daily"),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,
@@ -55,7 +56,7 @@ class TransactionDailyWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return TransactionItemWidget(
               type: index % 2 == 0
-                  ? TransactionType.pengeluaran
+                  ? TransactionType.pembelian
                   : TransactionType.penjualan,
               item: "Kacang Mete",
               ammount: "Rp. 1.000.000",

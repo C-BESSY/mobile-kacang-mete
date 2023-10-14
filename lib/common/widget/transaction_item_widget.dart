@@ -15,7 +15,7 @@ class TransactionItemWidget extends StatelessWidget {
     required this.date,
   });
 
-  bool get isPengeluaran => type == TransactionType.pengeluaran;
+  bool get isPengeluaran => type == TransactionType.pembelian;
 
   @override
   Widget build(BuildContext context) {

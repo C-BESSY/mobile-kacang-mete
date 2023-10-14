@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 class CardOverviewWidget extends StatelessWidget {
   final String title;
   final String description;
-  const CardOverviewWidget({super.key, required this.title, required this.description});
+  const CardOverviewWidget({
+    super.key,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
         Text(
@@ -28,7 +31,6 @@ class CardOverviewWidget extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          //NANTI BUAT INI BIAR UNTUK WEEKLY, DLL BISA LAIN LAIN NILAI INCOME & SPENDING NYA
           children: [
             _CardWidget(
               mainColor: Colors.green.shade500,
@@ -69,7 +71,8 @@ class _CardWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.025),
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        width: screenWidth * 0.4,
+        padding: EdgeInsets.all(screenWidth * 0.025),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(
@@ -79,6 +82,7 @@ class _CardWidget extends StatelessWidget {
           color: mainColor,
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(iconPath),
             SizedBox(
@@ -91,7 +95,7 @@ class _CardWidget extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: screenHeight * 0.015,
+                    fontSize: screenHeight * 0.018,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -99,7 +103,7 @@ class _CardWidget extends StatelessWidget {
                   value,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: screenHeight * 0.02,
+                    fontSize: screenHeight * 0.015,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

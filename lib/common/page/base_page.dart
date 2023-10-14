@@ -1,11 +1,13 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'dart:ui';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:kacang_mete/modules/create/pages/item_page.dart';
-import 'package:kacang_mete/modules/create/pages/pembelian_page.dart';
+import 'package:kacang_mete/features/item/pages/item_page.dart';
+import 'package:kacang_mete/features/pembelian/pages/pembelian_page.dart';
+import 'package:kacang_mete/features/penjualan/pages/penjualan_page.dart';
 import 'package:kacang_mete/modules/home/pages/home_page.dart';
-import 'package:kacang_mete/modules/create/pages/penjualan_page.dart';
 import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -22,9 +24,7 @@ class _BasePageState extends State<BasePage> {
   late final _pageController;
   late final _controller;
   bool isCreateOpen = false;
-
   int get maxCount => item.length;
-
   final item = [
     const HomePage(),
     const HomePage(),
@@ -78,60 +78,25 @@ class _BasePageState extends State<BasePage> {
               visible: isCreateOpen,
               child: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ItemPage()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: Colors.green,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(15),
-                      child: const Icon(Symbols.category, color: Colors.white),
-                    ),
+                  const _CreateBtnIcon(
+                    target: ItemPage(),
+                    bgColor: Colors.green,
+                    icon: Symbols.category,
                   ),
                   SizedBox(
                     height: screenHeight * 0.025,
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PenjualanPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        child: const Icon(Symbols.attach_money,
-                            color: Colors.white),
-                      ),
+                    const _CreateBtnIcon(
+                      target: PenjualanPage(),
+                      bgColor: Colors.blue,
+                      icon: Symbols.attach_money,
                     ),
                     SizedBox(width: screenWidth * 0.025),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PembelianPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        child:
-                            const Icon(Symbols.send_money, color: Colors.white),
-                      ),
+                    const _CreateBtnIcon(
+                      target: PembelianPage(),
+                      bgColor: Colors.red,
+                      icon: Symbols.send_money,
                     ),
                   ])
                 ],
@@ -143,49 +108,16 @@ class _BasePageState extends State<BasePage> {
       extendBody: true,
       bottomNavigationBar: (item.length <= maxCount)
           ? AnimatedNotchBottomBar(
-              /// Provide NotchBottomBarController
               notchBottomBarController: _controller,
               color: Colors.white,
               showLabel: false,
               notchColor: Colors.black87,
-
-              /// restart app if you change removeMargins
-              removeMargins: false,
-              bottomBarWidth: 500,
-              durationInMilliSeconds: 500,
-              bottomBarItems: const [
-                BottomBarItem(
-                  inActiveItem: Icon(
-                    Icons.home_filled,
-                    color: Colors.blueGrey,
-                  ),
-                  activeItem: Icon(
-                    Icons.home_filled,
-                    color: Colors.blueAccent,
-                  ),
-                  itemLabel: 'Home',
-                ),
-                BottomBarItem(
-                  inActiveItem: Icon(
-                    Icons.star,
-                    color: Colors.blueGrey,
-                  ),
-                  activeItem: Icon(
-                    Icons.star,
-                    color: Colors.blueAccent,
-                  ),
-                  itemLabel: 'Create',
-                ),
-                BottomBarItem(
-                  inActiveItem: Icon(
-                    Icons.currency_exchange,
-                    color: Colors.blueGrey,
-                  ),
-                  activeItem: Icon(
-                    Icons.currency_exchange,
-                    color: Colors.blueAccent,
-                  ),
-                  itemLabel: 'Transaction',
+              bottomBarItems: [
+                _BottomBarBtn(icon: Icons.home_filled, label: 'Home'),
+                _BottomBarBtn(icon: Icons.create, label: 'Create'),
+                _BottomBarBtn(
+                  icon: Icons.currency_exchange,
+                  label: 'Transaction',
                 ),
               ],
               onTap: (index) {
@@ -194,6 +126,52 @@ class _BasePageState extends State<BasePage> {
               },
             )
           : null,
+    );
+  }
+}
+
+class _BottomBarBtn extends BottomBarItem {
+  final IconData icon;
+  final String label;
+  _BottomBarBtn({required this.icon, required this.label})
+      : super(
+          inActiveItem: Icon(
+            icon,
+            color: Colors.blueGrey,
+          ),
+          activeItem: Icon(
+            icon,
+            color: Colors.blueAccent,
+          ),
+          itemLabel: label,
+        );
+}
+
+class _CreateBtnIcon extends StatelessWidget {
+  final StatefulWidget target;
+  final MaterialColor bgColor;
+  final IconData icon;
+  const _CreateBtnIcon({
+    required this.target,
+    required this.bgColor,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => target));
+      },
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        backgroundColor: bgColor,
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        child: Icon(icon, color: Colors.white),
+      ),
     );
   }
 }
