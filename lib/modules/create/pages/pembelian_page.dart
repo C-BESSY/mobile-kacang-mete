@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 
-class PembelianPage extends StatelessWidget {
+class PembelianPage extends StatefulWidget {
   const PembelianPage({super.key});
 
+  @override
+  State<PembelianPage> createState() => _PembelianPageState();
+}
+
+class _PembelianPageState extends State<PembelianPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -112,7 +117,8 @@ class PembelianPage extends StatelessWidget {
                             height: screenHeight * 0.025,
                           ),
                           TypeAheadField(
-                            textFieldConfiguration: const TextFieldConfiguration(
+                            textFieldConfiguration:
+                                const TextFieldConfiguration(
                               decoration: InputDecoration(
                                 labelText: "Jumlah",
                                 border: OutlineInputBorder(),

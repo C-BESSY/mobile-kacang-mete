@@ -78,60 +78,25 @@ class _BasePageState extends State<BasePage> {
               visible: isCreateOpen,
               child: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ItemPage()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: Colors.green,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(15),
-                      child: const Icon(Symbols.category, color: Colors.white),
-                    ),
+                  const _CreateBtnIcon(
+                    target: ItemPage(),
+                    bgColor: Colors.green,
+                    icon: Symbols.category,
                   ),
                   SizedBox(
                     height: screenHeight * 0.025,
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PenjualanPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        child: const Icon(Symbols.attach_money,
-                            color: Colors.white),
-                      ),
+                    const _CreateBtnIcon(
+                      target: PenjualanPage(),
+                      bgColor: Colors.blue,
+                      icon: Symbols.attach_money,
                     ),
                     SizedBox(width: screenWidth * 0.025),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PembelianPage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        child:
-                            const Icon(Symbols.send_money, color: Colors.white),
-                      ),
+                    const _CreateBtnIcon(
+                      target: PembelianPage(),
+                      bgColor: Colors.red,
+                      icon: Symbols.send_money,
                     ),
                   ])
                 ],
@@ -143,13 +108,10 @@ class _BasePageState extends State<BasePage> {
       extendBody: true,
       bottomNavigationBar: (item.length <= maxCount)
           ? AnimatedNotchBottomBar(
-              /// Provide NotchBottomBarController
               notchBottomBarController: _controller,
               color: Colors.white,
               showLabel: false,
               notchColor: Colors.black87,
-
-              /// restart app if you change removeMargins
               removeMargins: false,
               bottomBarWidth: 500,
               durationInMilliSeconds: 500,
@@ -194,6 +156,35 @@ class _BasePageState extends State<BasePage> {
               },
             )
           : null,
+    );
+  }
+}
+
+class _CreateBtnIcon extends StatelessWidget {
+  final StatefulWidget target;
+  final MaterialColor bgColor;
+  final IconData icon;
+  const _CreateBtnIcon({
+    required this.target,
+    required this.bgColor,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => target));
+      },
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        backgroundColor: bgColor,
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        child: Icon(icon, color: Colors.white),
+      ),
     );
   }
 }

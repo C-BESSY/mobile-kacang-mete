@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 
-class PenjualanPage extends StatelessWidget {
+class PenjualanPage extends StatefulWidget {
   const PenjualanPage({super.key});
 
+  @override
+  State<PenjualanPage> createState() => _PenjualanPageState();
+}
+
+class _PenjualanPageState extends State<PenjualanPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -86,7 +91,8 @@ class PenjualanPage extends StatelessWidget {
                       child: Column(
                         children: [
                           TypeAheadField(
-                            textFieldConfiguration: const TextFieldConfiguration(
+                            textFieldConfiguration:
+                                const TextFieldConfiguration(
                               autofocus: true,
                               decoration: InputDecoration(
                                 labelText: "Item",
@@ -112,7 +118,8 @@ class PenjualanPage extends StatelessWidget {
                             height: screenHeight * 0.025,
                           ),
                           TypeAheadField(
-                            textFieldConfiguration: const TextFieldConfiguration(
+                            textFieldConfiguration:
+                                const TextFieldConfiguration(
                               decoration: InputDecoration(
                                 labelText: "Jenis",
                                 border: OutlineInputBorder(),
