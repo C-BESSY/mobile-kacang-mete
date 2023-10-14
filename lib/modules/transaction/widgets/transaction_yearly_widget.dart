@@ -55,7 +55,7 @@ class TransactionYearlyWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return TransactionItemWidget(
               type: index % 2 == 0
-                  ? TransactionType.pengeluaran
+                  ? TransactionType.pembelian
                   : TransactionType.penjualan,
               item: "Kacang Mete",
               ammount: "Rp. 1.000.000",
