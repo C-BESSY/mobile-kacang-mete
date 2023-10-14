@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/page/base_page.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
-import 'package:kacang_mete/modules/transaction/pages/transaction_page.dart';
+import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
+import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +18,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _selectedMonth = "October 2023";
+  late DateTime _selectedDate;
+  final recentTransaction = [
+    const PembelianType(
+      id: 1,
+      pembelian: "Plastik",
+      harga: 1000000,
+      keterangan: "Beli Plastik",
+      date: "2023-10-10",
+    ),
+    const PenjualanType(
+      id: 1,
+      quantity: 10,
+      storedPrice: 100000,
+      date: "2023-10-10",
+      item: ItemType(
+        id: 1,
+        name: "Kacang Mete",
+        jenis: [
+          ItemJenisType(id: 1, kategori: "1kg", harga: 1000000),
+        ],
+      ),
+    )
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +59,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding:
@@ -38,21 +70,15 @@ class _HomePageState extends State<HomePage> {
                     child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.25),
+                Transform.translate(
+                  offset: Offset(-screenWidth * 0.085, 0),
                   child: TextButton(
                     onPressed: () {
                       showMonthPicker(
                         context: context,
                         initialDate: DateTime.now(),
-                      ).then((date) {
-                        if (date != null) {
-                          setState(() {
-                            _selectedMonth =
-                                DateFormat('MMMM yyyy').format(date);
-                          });
-                        }
-                      });
+                      ).then((date) => setState(
+                          () => _selectedDate = date ?? _selectedDate));
                     },
                     style: const ButtonStyle(
                         foregroundColor:
@@ -63,11 +89,12 @@ class _HomePageState extends State<HomePage> {
                           Icons.expand_more_rounded,
                           color: Color.fromARGB(255, 156, 7, 255),
                         ),
-                        Text(_selectedMonth),
+                        Text(dateTimeToMonth(_selectedDate)),
                       ],
                     ),
                   ),
-                )
+                ),
+                const SizedBox()
               ],
             ),
           ),
@@ -91,37 +118,47 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const BasePage(isTransaction: true),
-                            ),
-                          )
-                        },
-                    child: Text("See All"),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.grey.shade200)))
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const BasePage(isTransaction: true),
+                      ),
+                    )
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.grey.shade200)),
+                  child: const Text("See All"),
+                ),
               ],
             ),
           ),
           ListView.separated(
             shrinkWrap: true,
             padding: EdgeInsets.zero,
-            itemCount: 10,
+            itemCount: recentTransaction.length,
             separatorBuilder: (context, index) =>
                 SizedBox(height: screenHeight * 0.02),
             itemBuilder: (context, index) {
-              return TransactionItemWidget(
-                type: index % 2 == 0
-                    ? TransactionType.pengeluaran
-                    : TransactionType.penjualan,
-                item: "Kacang Mete",
-                ammount: "Rp. 1.000.000",
-                date: "1 Okt 2023",
-              );
+              final item = recentTransaction[index];
+              if (item is PembelianType) {
+                return TransactionItemWidget(
+                  type: TransactionType.pembelian,
+                  item: item.pembelian,
+                  ammount: intToIDR(item.harga),
+                  date: formatDate(item.date),
+                );
+              } else if (item is PenjualanType) {
+                return TransactionItemWidget(
+                  type: TransactionType.penjualan,
+                  item: item.item.name,
+                  ammount: intToIDR(item.storedPrice),
+                  date: formatDate(item.date),
+                );
+              }
+              return null;
             },
           ),
         ],
