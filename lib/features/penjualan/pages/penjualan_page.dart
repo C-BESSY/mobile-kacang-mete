@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:kacang_mete/common/page/base_page.dart';
+import 'package:kacang_mete/common/types/input_type.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
+import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
 
 class PenjualanPage extends StatefulWidget {
   const PenjualanPage({super.key});
@@ -10,6 +16,28 @@ class PenjualanPage extends StatefulWidget {
 }
 
 class _PenjualanPageState extends State<PenjualanPage> {
+  final _formKey = GlobalKey<FormState>();
+  ItemType? _selectedItem;
+  ItemJenisType? _selectedJenis;
+  List<ItemJenisType> _availableItemJenis = [];
+  final TextEditingController _quantity = TextEditingController(text: "0");
+  late final List<InputType> inputList = [
+    InputType("item", TextInputType.text, _quantity),
+    InputType("jenis", TextInputType.text, _quantity),
+    InputType("Jumlah", TextInputType.number, _quantity),
+  ];
+
+  String get theTotal => _selectedJenis == null && _quantity.text == "0"
+      ? intToIDR(0)
+      : intToIDR(int.parse(_quantity.text) * _selectedJenis!.harga);
+
+  void save() async {
+    if (_formKey.currentState!.validate()) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const BasePage()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -56,7 +84,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
                       ),
                     ),
                     Text(
-                      'Rp. 0',
+                      theTotal,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: screenWidth * 0.1,
@@ -88,73 +116,48 @@ class _PenjualanPageState extends State<PenjualanPage> {
                 child: Column(
                   children: [
                     Form(
-                      child: Column(
-                        children: [
-                          TypeAheadField(
-                            textFieldConfiguration:
-                                const TextFieldConfiguration(
-                              autofocus: true,
-                              decoration: InputDecoration(
-                                labelText: "Item",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.search),
-                              ),
-                            ),
-                            suggestionsCallback: (pattern) => [
-                              'Kacang Mete',
-                              'Kacang'
-                            ].where((x) => x
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())),
-                            itemBuilder: (context, suggestion) {
-                              return ListTile(
-                                title: Text(suggestion),
+                      key: _formKey,
+                      child: ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: inputList.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: screenHeight * 0.02),
+                        itemBuilder: (context, index) {
+                          final inputData = inputList[index];
+                          switch (inputData.label) {
+                            case "item":
+                              return ItemPickerWidget(
+                                onSelected: (item, jenis) => setState(() {
+                                  _selectedItem = item;
+                                  _availableItemJenis = jenis;
+                                }),
                               );
-                            },
-                            onSuggestionSelected: (String suggestion) =>
-                                debugPrint(suggestion),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.025,
-                          ),
-                          TypeAheadField(
-                            textFieldConfiguration:
-                                const TextFieldConfiguration(
-                              decoration: InputDecoration(
-                                labelText: "Jenis",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.search),
-                              ),
-                            ),
-                            suggestionsCallback: (pattern) => [
-                              'Kacang Mete',
-                              'Kacang'
-                            ].where((x) => x
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())),
-                            itemBuilder: (context, suggestion) {
-                              return ListTile(
-                                title: Text(suggestion),
+                            case "jenis":
+                              return ItemJenisPickerWidget(
+                                onSelected: (item) =>
+                                    setState(() => _selectedJenis = item),
+                                items: _availableItemJenis,
                               );
-                            },
-                            onSuggestionSelected: (String suggestion) =>
-                                debugPrint(suggestion),
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.025,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Jumlah",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ],
+                            default:
+                              return TextFormField(
+                                controller: inputData.textController,
+                                keyboardType: inputData.inputType,
+                                decoration: InputDecoration(
+                                  labelText: inputData.label,
+                                  border: const OutlineInputBorder(),
+                                ),
+                                onChanged: (value) =>
+                                    setState(() => _quantity.text = value),
+                                validator: (value) =>
+                                    inputData.validator(inputData.label, value),
+                              );
+                          }
+                        },
                       ),
                     ),
                     ButtonWidget(
-                      () => debugPrint('ini simpan'),
+                      save,
                       title: "Simpan",
                     ),
                   ],
