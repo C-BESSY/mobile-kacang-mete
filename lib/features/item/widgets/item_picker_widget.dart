@@ -20,8 +20,8 @@ class _ItemPickerWidgetState extends State<ItemPickerWidget> {
       ItemJenisType(id: 2, kategori: "2kg", harga: 200000),
     ]),
     const ItemType(id: 1, name: "Kucing", jenis: [
-      ItemJenisType(id: 1, kategori: "hitam", harga: 100000),
-      ItemJenisType(id: 2, kategori: "kuning", harga: 200000),
+      ItemJenisType(id: 1, kategori: "Hitam", harga: 100000),
+      ItemJenisType(id: 2, kategori: "Kuning", harga: 200000),
     ]),
   ];
 

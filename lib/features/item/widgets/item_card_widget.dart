@@ -40,7 +40,7 @@ class ItemCardWidget extends StatelessWidget {
             ),
           ),
           ButtonWidget(() {
-            debugPrint('asgasdg');
+            debugPrint('Ini item Apply');
           }, color: Colors.brown.shade900)
         ],
       ),
