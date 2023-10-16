@@ -5,8 +5,13 @@ import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 
 class ItemPickerWidget extends StatefulWidget {
-  final Function(ItemType, List<ItemVarianType>) onSelected;
-  const ItemPickerWidget({super.key, required this.onSelected});
+  final Function(ItemType, List<ItemVarianType>?) onSelected;
+  final Function(String)? onChanged;
+  const ItemPickerWidget({
+    super.key,
+    required this.onSelected,
+    this.onChanged,
+  });
 
   @override
   State<ItemPickerWidget> createState() => _ItemPickerWidgetState();
@@ -37,6 +42,8 @@ class _ItemPickerWidgetState extends State<ItemPickerWidget> {
     return TypeAheadFormField(
       textFieldConfiguration: TextFieldConfiguration(
         controller: _selectedItem,
+        onChanged: (value) =>
+            {if (widget.onChanged != null) widget.onChanged!(value)},
         decoration: const InputDecoration(
           labelText: "Pilih Item",
           border: OutlineInputBorder(),

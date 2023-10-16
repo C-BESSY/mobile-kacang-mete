@@ -132,7 +132,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
                               return ItemPickerWidget(
                                 onSelected: (item, jenis) => setState(() {
                                   _selectedItem = item;
-                                  _availableItemJenis = jenis;
+                                  _availableItemJenis = jenis!;
                                 }),
                               );
                             case "jenis":
