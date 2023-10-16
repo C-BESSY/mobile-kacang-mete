@@ -119,7 +119,9 @@ class _BasePageState extends State<BasePage> {
               ],
               onTap: (index) {
                 setState(() => isCreateOpen = index == 1);
-                _pageController.jumpToPage(index);
+                if (index != 1) {
+                  _pageController.jumpToPage(index);
+                }
               },
             )
           : null,
