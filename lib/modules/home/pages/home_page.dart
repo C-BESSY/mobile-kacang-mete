@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       item: ItemType(
         id: 1,
         name: "Kacang Mete",
-        jenis: [
+        varian: [
           ItemVarianType(id: 1, varian: "1kg", harga: 1000000),
         ],
       ),

@@ -16,7 +16,7 @@ class PenjualanType {
 
   int get currentPrice {
     final item = this.item;
-    if (item.jenis.isEmpty) return 0;
-    return item.jenis.first.harga * quantity;
+    if (item.varian.isEmpty) return 0;
+    return item.varian.first.harga * quantity;
   }
 }

@@ -15,11 +15,11 @@ class ItemPickerWidget extends StatefulWidget {
 class _ItemPickerWidgetState extends State<ItemPickerWidget> {
   final TextEditingController _selectedItem = TextEditingController();
   final List<ItemType> items = [
-    const ItemType(id: 1, name: "Kacang Mete", jenis: [
+    const ItemType(id: 1, name: "Kacang Mete", varian: [
       ItemVarianType(id: 1, varian: "1kg", harga: 100000),
       ItemVarianType(id: 2, varian: "2kg", harga: 200000),
     ]),
-    const ItemType(id: 1, name: "Kucing", jenis: [
+    const ItemType(id: 1, name: "Kucing", varian: [
       ItemVarianType(id: 1, varian: "Hitam", harga: 100000),
       ItemVarianType(id: 2, varian: "Kuning", harga: 200000),
     ]),
@@ -58,7 +58,7 @@ class _ItemPickerWidgetState extends State<ItemPickerWidget> {
         return suggestionsBox;
       },
       onSuggestionSelected: (ItemType suggestion) {
-        widget.onSelected(suggestion, suggestion.jenis);
+        widget.onSelected(suggestion, suggestion.varian);
         _selectedItem.text = suggestion.name;
       },
       validator: (value) => InputType.validatedInput("Item", value),
