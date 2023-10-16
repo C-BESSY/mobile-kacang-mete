@@ -6,6 +6,22 @@ class ItemVarianRepository {
   final DBUtil db = DBUtil();
   final String tableName = "item_varian";
 
+  Future<ItemVarianType?> getVarians(context, {required int varianId}) async {
+    try {
+      final data = await db.find(
+        tableName,
+        args: varianId,
+      );
+      if (data == null) {
+        throw "Not Found";
+      }
+      return ItemVarianType.fromDB(data);
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<List<ItemVarianType>> getVariansByItem(
     BuildContext context, {
     required int itemId,
@@ -26,7 +42,11 @@ class ItemVarianRepository {
   Future<bool> insertItemVarian(BuildContext context,
       {required Map<String, dynamic> row}) async {
     try {
-      await db.insert(tableName, row: row);
+      if (row['id'] == null) {
+        await db.insert(tableName, row: row);
+      } else {
+        await db.update(tableName, row['id'], row: row);
+      }
       return true;
     } catch (error) {
       print(error);

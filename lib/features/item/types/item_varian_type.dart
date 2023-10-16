@@ -1,15 +1,16 @@
 class ItemVarianType {
-  final int id;
+  final int? id;
   final String varian;
   final int harga;
   const ItemVarianType({
-    required this.id,
+    this.id,
     required this.varian,
     required this.harga,
   });
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'varian': varian,
       'harga': harga,
     };
