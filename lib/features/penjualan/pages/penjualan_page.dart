@@ -36,6 +36,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
 
   void save() async {
     if (_formKey.currentState!.validate()) {
+      final theData = _selectedItem!.toMap();
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const BasePage()));
     }

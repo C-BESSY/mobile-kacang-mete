@@ -1,47 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 
-class ItemCardWidget extends StatelessWidget {
-  const ItemCardWidget({super.key});
+class ItemCardWidget extends StatefulWidget {
+  final ItemVarianType varian;
+  final VoidCallback onPressed;
+  final void Function(ItemVarianType) onChanged;
+  const ItemCardWidget({
+    super.key,
+    required this.varian,
+    required this.onPressed,
+    required this.onChanged,
+  });
+
+  @override
+  State<ItemCardWidget> createState() => _ItemCardWidgetState();
+}
+
+class _ItemCardWidgetState extends State<ItemCardWidget> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _varian =
+      TextEditingController(text: widget.varian.varian);
+  late final TextEditingController _harga =
+      TextEditingController(text: widget.varian.harga.toString());
+  late final List<InputType> inputList = [
+    InputType("Varian", TextInputType.text, _varian),
+    InputType("Harga per-varian", TextInputType.number, _harga),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          TypeAheadField(
-            textFieldConfiguration: const TextFieldConfiguration(
-              decoration: InputDecoration(
-                labelText: "Jenis",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            suggestionsCallback: (pattern) => ['Kacang Mete', 'Kacang']
-                .where((x) => x.toLowerCase().contains(pattern.toLowerCase())),
-            itemBuilder: (context, suggestion) {
-              return ListTile(
-                title: Text(suggestion),
-              );
+          Form(
+            onChanged: () => {
+              widget.onChanged(ItemVarianType(
+                id: widget.varian.id,
+                varian: widget.varian.varian,
+                harga: widget.varian.harga,
+              ))
             },
-            onSuggestionSelected: (String suggestion) => debugPrint(suggestion),
-          ),
-          SizedBox(
-            height: screenHeight * 0.025,
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: "Jumlah",
-              border: OutlineInputBorder(),
+            key: _formKey,
+            child: ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: inputList.length,
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: screenHeight * 0.02),
+              itemBuilder: (context, index) {
+                final inputData = inputList[index];
+                return TextFormField(
+                  controller: inputData.textController,
+                  keyboardType: inputData.inputType,
+                  decoration: InputDecoration(
+                    labelText: inputData.label,
+                    border: const OutlineInputBorder(),
+                  ),
+                  validator: (value) =>
+                      inputData.validator(inputData.label, value),
+                );
+              },
             ),
           ),
-          ButtonWidget(() {
-            debugPrint('Ini item Apply');
-          }, color: Colors.brown.shade900)
+          ButtonWidget(
+            widget.onPressed,
+            title: "Hapus",
+            color: Colors.brown.shade900,
+          )
         ],
       ),
     );
