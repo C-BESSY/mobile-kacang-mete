@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemJenisPickerWidget extends StatefulWidget {
   final Function(ItemVarianType) onSelected;

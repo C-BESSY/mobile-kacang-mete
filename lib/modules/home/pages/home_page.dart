@@ -4,7 +4,7 @@ import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';

@@ -4,7 +4,7 @@ import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';

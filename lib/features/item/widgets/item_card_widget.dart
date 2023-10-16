@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemCardWidget extends StatefulWidget {
   final ItemVarianType varian;

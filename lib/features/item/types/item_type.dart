@@ -1,4 +1,4 @@
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemType {
   final int id;
@@ -14,5 +14,13 @@ class ItemType {
     return {
       'name': name,
     };
+  }
+
+  factory ItemType.fromDB(Map<String, dynamic> data) {
+    return ItemType(
+      id: data['id'],
+      name: data['name'],
+      varian: [],
+    );
   }
 }
