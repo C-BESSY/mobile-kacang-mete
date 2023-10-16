@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
@@ -36,8 +36,8 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
       item: ItemType(
         id: 1,
         name: "Kacang Mete",
-        jenis: [
-          ItemJenisType(id: 1, kategori: "1kg", harga: 1000000),
+        varian: [
+          ItemVarianType(id: 1, varian: "1kg", harga: 1000000),
         ],
       ),
     )
@@ -50,7 +50,7 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     return Column(
       children: [
         CardOverviewWidget(
-            title: widget.selectedMonth, description: "coba transaction daily"),
+            title: widget.selectedMonth, description: "Daily Transaction"),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,

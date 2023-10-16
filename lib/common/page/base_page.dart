@@ -59,13 +59,10 @@ class _BasePageState extends State<BasePage> {
           Positioned.fill(
             child: Visibility(
               visible: isCreateOpen,
-              child: GestureDetector(
-                onTap: () => setState(() => isCreateOpen = false),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.1),
-                  ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
                 ),
               ),
             ),
@@ -122,7 +119,9 @@ class _BasePageState extends State<BasePage> {
               ],
               onTap: (index) {
                 setState(() => isCreateOpen = index == 1);
-                _pageController.jumpToPage(index);
+                if (index != 1) {
+                  _pageController.jumpToPage(index);
+                }
               },
             )
           : null,

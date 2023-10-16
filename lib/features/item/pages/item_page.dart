@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
+import 'package:kacang_mete/common/widget/show_dialog_widget.dart';
+import 'package:kacang_mete/features/item/repository/item_repository.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_card_widget.dart';
+import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key});
@@ -11,43 +16,75 @@ class ItemPage extends StatefulWidget {
 }
 
 class _ItemPageState extends State<ItemPage> {
-  final List<ItemCardWidget> arrOfItemCard = [
-    ItemCardWidget(),
-  ];
+  final ItemRepository _repository = ItemRepository();
+  final _formKey = GlobalKey<FormState>();
+  String? _selectedItem;
+  String? _rawName;
+  String get visibleSelectedItem => _selectedItem == null
+      ? "-"
+      : (_selectedItem! == "" ? "-" : _selectedItem!);
+  bool isCreateNew = true;
+  List<ItemVarianType> variants = [];
+
+  Future save() async {
+    if (_formKey.currentState!.validate()) {
+      final res = await _repository.insertItem(
+        context,
+        itemName: _selectedItem!,
+        rawName: _rawName,
+        variants: variants,
+      );
+      if (res) {
+        //FIX: show dialog not showing?
+        Future.delayed(Duration.zero, () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const ShowDialogWidget(
+                message: "Sukses Membuat Item Baru",
+              );
+            },
+          );
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const BasePage()));
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Center(
-          child: Transform.translate(
-            offset: Offset(-screenWidth * 0.04, 0),
-            child: Text(
-              "Item",
-              style: TextStyle(
-                fontSize: screenWidth * 0.04,
-              ),
-            ),
+      floatingActionButton: Visibility(
+        visible: !isCreateNew,
+        child: FloatingActionButton(
+          onPressed: () => debugPrint('should Delete'),
+          child: const Icon(
+            Icons.delete,
+            color: Colors.red,
           ),
         ),
-        backgroundColor: Colors.brown.shade800,
+      ),
+      appBar: CenteredAppBarWidget(
+        title: "Item",
+        color: Colors.brown.shade800,
+        screenWidth: screenWidth,
       ),
       backgroundColor: Colors.brown.shade800,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-            top: screenHeight * 0.2,
+            top: screenHeight * 0.1,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  left: screenWidth * 0.025,
-                  right: screenWidth * 0.025,
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.025,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +97,7 @@ class _ItemPageState extends State<ItemPage> {
                       ),
                     ),
                     Text(
-                      'Kacang Mete',
+                      visibleSelectedItem,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: screenWidth * 0.1,
@@ -71,6 +108,8 @@ class _ItemPageState extends State<ItemPage> {
                 ),
               ),
               Container(
+                constraints: BoxConstraints(
+                    minHeight: screenHeight * 0.72, minWidth: double.infinity),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius:
@@ -90,32 +129,27 @@ class _ItemPageState extends State<ItemPage> {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Form(
+                      key: _formKey,
                       child: Column(
                         children: [
-                          TypeAheadField(
-                            textFieldConfiguration:
-                                const TextFieldConfiguration(
-                              decoration: InputDecoration(
-                                labelText: "Nama Item",
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.search),
-                              ),
-                            ),
-                            suggestionsCallback: (pattern) => [
-                              'Kacang Mete',
-                              'Kacang'
-                            ].where((x) => x
-                                .toLowerCase()
-                                .contains(pattern.toLowerCase())),
-                            itemBuilder: (context, suggestion) {
-                              return ListTile(
-                                title: Text(suggestion),
-                              );
-                            },
-                            onSuggestionSelected: (String suggestion) =>
-                                debugPrint(suggestion),
+                          ItemPickerWidget(
+                            onSelected: (item, jenis) => setState(() {
+                              _selectedItem = item.name;
+                              variants = [...jenis!];
+                              _rawName = item.name;
+                              isCreateNew = false;
+                            }),
+                            onChanged: (value) => setState(() {
+                              _selectedItem = value;
+                              if (value == "") {
+                                _rawName = null;
+                                variants = [];
+                                isCreateNew = true;
+                              }
+                            }),
                           ),
                           SizedBox(
                             height: screenHeight * 0.025,
@@ -127,39 +161,52 @@ class _ItemPageState extends State<ItemPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  'Jenis',
+                                  'Varian',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0),
                                 ),
                                 TextButton(
                                   onPressed: () => setState(() {
-                                    arrOfItemCard.add(const ItemCardWidget());
+                                    variants.add(const ItemVarianType(
+                                        id: null, varian: "", harga: 0));
                                   }),
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
-                                        Color.fromARGB(244, 224, 217, 217)),
+                                      const Color.fromARGB(244, 224, 217, 217),
+                                    ),
                                   ),
                                   child: const Text('Tambah'),
                                 ),
                               ],
                             ),
                           ),
-                          ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: arrOfItemCard.length,
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: screenHeight * 0.02),
-                            itemBuilder: (context, index) {
-                              final item = arrOfItemCard[index];
-                              return item;
-                            },
-                          ),
+                          if (variants.isNotEmpty)
+                            ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: variants.length,
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: screenHeight * 0.02),
+                              itemBuilder: (context, index) {
+                                final item = variants[index];
+                                return ItemCardWidget(
+                                  varian: item,
+                                  //FIX: remove at still not working
+                                  onPressed: () => setState(() {
+                                    variants.removeAt(index);
+                                  }),
+                                  onChanged: (varian) =>
+                                      setState(() => variants[index] = varian),
+                                );
+                              },
+                            )
+                          else
+                            const Text('Tidak Ada Varian')
                         ],
                       ),
                     ),
                     ButtonWidget(
-                      () => debugPrint('ini simpan'),
+                      save,
                       title: "Simpan",
                     ),
                   ],

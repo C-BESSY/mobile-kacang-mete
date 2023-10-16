@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemJenisPickerWidget extends StatefulWidget {
-  final Function(ItemJenisType) onSelected;
-  final List<ItemJenisType> items;
+  final Function(ItemVarianType) onSelected;
+  final List<ItemVarianType> items;
   const ItemJenisPickerWidget({
     super.key,
     required this.onSelected,
@@ -18,10 +18,10 @@ class ItemJenisPickerWidget extends StatefulWidget {
 
 class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
   final TextEditingController _selectedItem = TextEditingController();
-  List<ItemJenisType> searchItem(String pattern) {
+  List<ItemVarianType> searchItem(String pattern) {
     return widget.items
-        .where((item) =>
-            item.kategori.toLowerCase().contains(pattern.toLowerCase()))
+        .where(
+            (item) => item.varian.toLowerCase().contains(pattern.toLowerCase()))
         .toList();
   }
 
@@ -39,20 +39,20 @@ class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
       suggestionsCallback: (pattern) async {
         return searchItem(pattern);
       },
-      itemBuilder: (context, ItemJenisType suggestion) {
+      itemBuilder: (context, ItemVarianType suggestion) {
         return Listener(
           child: ListTile(
             dense: true,
-            title: Text(suggestion.kategori),
+            title: Text(suggestion.varian),
           ),
         );
       },
       transitionBuilder: (context, suggestionsBox, controller) {
         return suggestionsBox;
       },
-      onSuggestionSelected: (ItemJenisType suggestion) {
+      onSuggestionSelected: (ItemVarianType suggestion) {
         widget.onSelected(suggestion);
-        _selectedItem.text = suggestion.kategori;
+        _selectedItem.text = suggestion.varian;
       },
       validator: (value) => InputType.validatedInput("Jenis", value),
     );

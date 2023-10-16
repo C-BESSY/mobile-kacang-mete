@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
-import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
-import 'package:kacang_mete/features/item/types/item_type.dart';
-import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
-import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
-import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
-import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
+import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
+import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
+import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
 
 class PembelianPage extends StatefulWidget {
   const PembelianPage({super.key});
@@ -27,7 +24,7 @@ class _PembelianPageState extends State<PembelianPage> {
   final _formKey = GlobalKey<FormState>();
   KategoriType? _selectedKategori;
   String? newKategori;
-  List<ItemJenisType> _availableItemJenis = [];
+  List<ItemVarianType> _availableItemJenis = [];
   late final List<InputType> inputList = [
     InputType("Kategori", TextInputType.text, _keterangan),
     InputType("Keterangan", TextInputType.text, _keterangan),
@@ -49,20 +46,10 @@ class _PembelianPageState extends State<PembelianPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Center(
-          child: Transform.translate(
-            offset: Offset(-screenWidth * 0.04, 0),
-            child: Text(
-              "Pengeluaran",
-              style: TextStyle(
-                fontSize: screenWidth * 0.04,
-              ),
-            ),
-          ),
-        ),
-        backgroundColor: Colors.red.shade400,
+      appBar: CenteredAppBarWidget(
+        title: "Pembelian",
+        color: Colors.red.shade400,
+        screenWidth: screenWidth,
       ),
       backgroundColor: Colors.red.shade400,
       body: SingleChildScrollView(

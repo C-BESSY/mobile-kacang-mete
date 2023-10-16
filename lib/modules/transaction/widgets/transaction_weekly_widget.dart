@@ -17,7 +17,7 @@ class TransactionWeeklyWidget extends StatelessWidget {
     return Column(
       children: [
         CardOverviewWidget(
-          title: "$selectedMonth - Weekly",
+          title: "$selectedMonth",
           description: "Weekly Transaction",
         ),
         ...List.generate(numberOfWeeks, (weekIndex) {
