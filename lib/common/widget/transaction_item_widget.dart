@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 
 class TransactionItemWidget extends StatelessWidget {
   final TransactionType type;
   final String item;
-  final String ammount;
+  final int ammount;
   final String date;
 
   const TransactionItemWidget({
@@ -62,14 +63,14 @@ class TransactionItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  ammount,
+                  intToIDR(ammount),
                   style: TextStyle(
                     color: isPengeluaran
                         ? Colors.red.shade500
                         : Colors.green.shade500,
                   ),
                 ),
-                Text(date),
+                Text(formatDate(date)),
               ],
             )
           ],

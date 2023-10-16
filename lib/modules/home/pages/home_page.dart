@@ -6,6 +6,7 @@ import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
@@ -22,10 +23,10 @@ class _HomePageState extends State<HomePage> {
   final recentTransaction = [
     const PembelianType(
       id: 1,
-      pembelian: "Plastik",
       harga: 1000000,
       keterangan: "Beli Plastik",
       date: "2023-10-10",
+      kategori: KategoriType(id: 1, name: "Plastik"),
     ),
     const PenjualanType(
       id: 1,
@@ -146,16 +147,16 @@ class _HomePageState extends State<HomePage> {
               if (item is PembelianType) {
                 return TransactionItemWidget(
                   type: TransactionType.pembelian,
-                  item: item.pembelian,
-                  ammount: intToIDR(item.harga),
-                  date: formatDate(item.date),
+                  item: item.kategori.name,
+                  ammount: item.harga,
+                  date: item.date,
                 );
               } else if (item is PenjualanType) {
                 return TransactionItemWidget(
                   type: TransactionType.penjualan,
                   item: item.item.name,
-                  ammount: intToIDR(item.storedPrice),
-                  date: formatDate(item.date),
+                  ammount: item.storedPrice,
+                  date: item.date,
                 );
               }
               return null;

@@ -2,11 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
+import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
+import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
+import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
+import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 
-class TransactionDailyWidget extends StatelessWidget {
+class TransactionDailyWidget extends StatefulWidget {
   final String selectedMonth;
 
   const TransactionDailyWidget({super.key, required this.selectedMonth});
+
+  @override
+  State<TransactionDailyWidget> createState() => _TransactionDailyWidgetState();
+}
+
+class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
+  late DateTime _selectedDate;
+
+  final recentTransaction = [
+    const PembelianType(
+      id: 1,
+      harga: 1000000,
+      keterangan: "Beli Plastik",
+      date: "2023-10-10",
+      kategori: KategoriType(id: 1, name: "Plastik"),
+    ),
+    const PenjualanType(
+      id: 1,
+      quantity: 10,
+      storedPrice: 100000,
+      date: "2023-10-10",
+      item: ItemType(
+        id: 1,
+        name: "Kacang Mete",
+        jenis: [
+          ItemJenisType(id: 1, kategori: "1kg", harga: 1000000),
+        ],
+      ),
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -14,7 +50,7 @@ class TransactionDailyWidget extends StatelessWidget {
     return Column(
       children: [
         CardOverviewWidget(
-            title: selectedMonth, description: "coba transaction daily"),
+            title: widget.selectedMonth, description: "coba transaction daily"),
         Padding(
           padding: EdgeInsets.symmetric(
             vertical: screenHeight * 0.03,
@@ -24,7 +60,7 @@ class TransactionDailyWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "1 $selectedMonth",
+                "1 ${widget.selectedMonth}",
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: screenWidth * 0.035,
@@ -50,18 +86,28 @@ class TransactionDailyWidget extends StatelessWidget {
         ),
         ListView.separated(
           shrinkWrap: true,
-          itemCount: 10,
+          padding: EdgeInsets.zero,
+          itemCount: recentTransaction.length,
           separatorBuilder: (context, index) =>
               SizedBox(height: screenHeight * 0.02),
           itemBuilder: (context, index) {
-            return TransactionItemWidget(
-              type: index % 2 == 0
-                  ? TransactionType.pembelian
-                  : TransactionType.penjualan,
-              item: "Kacang Mete",
-              ammount: "Rp. 1.000.000",
-              date: "1 Okt 2023",
-            );
+            final item = recentTransaction[index];
+            if (item is PembelianType) {
+              return TransactionItemWidget(
+                type: TransactionType.pembelian,
+                item: item.kategori.name,
+                ammount: item.harga,
+                date: item.date,
+              );
+            } else if (item is PenjualanType) {
+              return TransactionItemWidget(
+                type: TransactionType.penjualan,
+                item: item.item.name,
+                ammount: item.storedPrice,
+                date: item.date,
+              );
+            }
+            return null;
           },
         ),
       ],
