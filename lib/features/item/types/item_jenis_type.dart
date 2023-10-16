@@ -1,10 +1,10 @@
-class ItemJenisType {
+class ItemVarianType {
   final int id;
-  final String kategori;
+  final String varian;
   final int harga;
-  const ItemJenisType({
+  const ItemVarianType({
     required this.id,
-    required this.kategori,
+    required this.varian,
     required this.harga,
   });
 }

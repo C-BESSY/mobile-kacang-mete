@@ -5,7 +5,7 @@ import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 
 class ItemPickerWidget extends StatefulWidget {
-  final Function(ItemType, List<ItemJenisType>) onSelected;
+  final Function(ItemType, List<ItemVarianType>) onSelected;
   const ItemPickerWidget({super.key, required this.onSelected});
 
   @override
@@ -16,12 +16,12 @@ class _ItemPickerWidgetState extends State<ItemPickerWidget> {
   final TextEditingController _selectedItem = TextEditingController();
   final List<ItemType> items = [
     const ItemType(id: 1, name: "Kacang Mete", jenis: [
-      ItemJenisType(id: 1, kategori: "1kg", harga: 100000),
-      ItemJenisType(id: 2, kategori: "2kg", harga: 200000),
+      ItemVarianType(id: 1, varian: "1kg", harga: 100000),
+      ItemVarianType(id: 2, varian: "2kg", harga: 200000),
     ]),
     const ItemType(id: 1, name: "Kucing", jenis: [
-      ItemJenisType(id: 1, kategori: "Hitam", harga: 100000),
-      ItemJenisType(id: 2, kategori: "Kuning", harga: 200000),
+      ItemVarianType(id: 1, varian: "Hitam", harga: 100000),
+      ItemVarianType(id: 2, varian: "Kuning", harga: 200000),
     ]),
   ];
 

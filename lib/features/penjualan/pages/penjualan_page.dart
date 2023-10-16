@@ -19,8 +19,8 @@ class PenjualanPage extends StatefulWidget {
 class _PenjualanPageState extends State<PenjualanPage> {
   final _formKey = GlobalKey<FormState>();
   ItemType? _selectedItem;
-  ItemJenisType? _selectedJenis;
-  List<ItemJenisType> _availableItemJenis = [];
+  ItemVarianType? _selectedJenis;
+  List<ItemVarianType> _availableItemJenis = [];
   final TextEditingController _quantity = TextEditingController(text: "");
   late final List<InputType> inputList = [
     InputType("item", TextInputType.text, _quantity),
