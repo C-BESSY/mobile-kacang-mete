@@ -3,6 +3,7 @@ import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
 import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
@@ -45,20 +46,10 @@ class _PenjualanPageState extends State<PenjualanPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Center(
-          child: Transform.translate(
-            offset: Offset(-screenWidth * 0.04, 0),
-            child: Text(
-              "Penjualan",
-              style: TextStyle(
-                fontSize: screenWidth * 0.04,
-              ),
-            ),
-          ),
-        ),
-        backgroundColor: Colors.green.shade300,
+      appBar: CenteredAppBarWidget(
+        title: "Penjualan",
+        color: Colors.green.shade300,
+        screenWidth: screenWidth,
       ),
       backgroundColor: Colors.green.shade300,
       body: SingleChildScrollView(

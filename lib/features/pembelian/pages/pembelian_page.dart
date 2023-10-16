@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
 
 class PembelianPage extends StatefulWidget {
   const PembelianPage({super.key});
@@ -15,20 +16,10 @@ class _PembelianPageState extends State<PembelianPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Center(
-          child: Transform.translate(
-            offset: Offset(-screenWidth * 0.04, 0),
-            child: Text(
-              "Pengeluaran",
-              style: TextStyle(
-                fontSize: screenWidth * 0.04,
-              ),
-            ),
-          ),
-        ),
-        backgroundColor: Colors.red.shade400,
+      appBar: CenteredAppBarWidget(
+        title: "Pembelian",
+        color: Colors.red.shade400,
+        screenWidth: screenWidth,
       ),
       backgroundColor: Colors.red.shade400,
       body: SingleChildScrollView(
