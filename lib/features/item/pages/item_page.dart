@@ -19,6 +19,7 @@ class _ItemPageState extends State<ItemPage> {
   final ItemRepository _repository = ItemRepository();
   final _formKey = GlobalKey<FormState>();
   String? _selectedItem;
+  String? _rawName;
   String get visibleSelectedItem => _selectedItem == null
       ? "-"
       : (_selectedItem! == "" ? "-" : _selectedItem!);
@@ -27,8 +28,12 @@ class _ItemPageState extends State<ItemPage> {
 
   Future save() async {
     if (_formKey.currentState!.validate()) {
-      final res = await _repository.insertItem(context,
-          itemName: _selectedItem!, variants: variants);
+      final res = await _repository.insertItem(
+        context,
+        itemName: _selectedItem!,
+        rawName: _rawName,
+        variants: variants,
+      );
       if (res) {
         //FIX: show dialog not showing?
         Future.delayed(Duration.zero, () {
@@ -134,11 +139,13 @@ class _ItemPageState extends State<ItemPage> {
                             onSelected: (item, jenis) => setState(() {
                               _selectedItem = item.name;
                               variants = [...jenis!];
+                              _rawName = item.name;
                               isCreateNew = false;
                             }),
                             onChanged: (value) => setState(() {
                               _selectedItem = value;
                               if (value == "") {
+                                _rawName = null;
                                 variants = [];
                                 isCreateNew = true;
                               }
@@ -162,7 +169,7 @@ class _ItemPageState extends State<ItemPage> {
                                 TextButton(
                                   onPressed: () => setState(() {
                                     variants.add(const ItemVarianType(
-                                        id: 0, varian: "", harga: 0));
+                                        id: null, varian: "", harga: 0));
                                   }),
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(

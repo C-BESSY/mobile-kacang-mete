@@ -24,17 +24,21 @@ class ItemRepository {
   Future<bool> insertItem(
     BuildContext context, {
     required String itemName,
+    String? rawName,
     required List<ItemVarianType> variants,
   }) async {
     try {
-      final item = await db.find(tableName, col: 'name', args: itemName);
+      final item =
+          await db.find(tableName, col: 'name', args: rawName ?? itemName);
+      final row = {
+        'name': itemName,
+      };
       int itemId = 0;
       if (item == null) {
-        itemId = await db.insert(tableName, row: {
-          'name': itemName,
-        });
+        itemId = await db.insert(tableName, row: row);
       } else {
         itemId = item['id'];
+        await db.update(tableName, itemId, row: row);
       }
       for (var varian in variants) {
         await ItemVarianRepository().insertItemVarian(context,
