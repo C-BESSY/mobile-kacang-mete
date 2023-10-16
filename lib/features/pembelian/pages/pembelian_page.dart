@@ -8,6 +8,8 @@ import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
+import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
+import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 
 class PembelianPage extends StatefulWidget {
   const PembelianPage({super.key});
@@ -17,28 +19,25 @@ class PembelianPage extends StatefulWidget {
 }
 
 class _PembelianPageState extends State<PembelianPage> {
+  final TextEditingController _keterangan = TextEditingController();
+  final TextEditingController _harga = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
-  ItemType? _selectedItem;
-  ItemJenisType? _selectedJenis;
+  KategoriType? _selectedKategori;
   List<ItemJenisType> _availableItemJenis = [];
-  final TextEditingController _quantity = TextEditingController(text: "0");
   late final List<InputType> inputList = [
-    InputType("item", TextInputType.text, _quantity),
-    InputType("keterangan", TextInputType.text, _quantity),
-    InputType("Jumlah", TextInputType.number, _quantity),
+    InputType("kategori", TextInputType.text, _keterangan),
+    InputType("Keterangan", TextInputType.text, _keterangan),
+    InputType("Harga", TextInputType.number, _harga),
   ];
-  
-  String get theTotal => _selectedJenis == null && _quantity.text == "0"
-      ? intToIDR(0)
-      : intToIDR(int.parse(_quantity.text) * _selectedJenis!.harga);
 
   void save() async {
     if (_formKey.currentState!.validate()) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const BasePage()));
     }
-}
-  
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -85,7 +84,8 @@ class _PembelianPageState extends State<PembelianPage> {
                       ),
                     ),
                     Text(
-                      theTotal,
+                      intToIDR(
+                          int.parse(_harga.text == "" ? "0" : _harga.text)),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: screenWidth * 0.1,
@@ -122,22 +122,17 @@ class _PembelianPageState extends State<PembelianPage> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: inputList.length,
-                        separatorBuilder: (context, index) => SizedBox(height: screenHeight * 0.02,),
-                        itemBuilder: ( context, int index){
+                        separatorBuilder: (context, index) => SizedBox(
+                          height: screenHeight * 0.02,
+                        ),
+                        itemBuilder: (context, int index) {
                           final inputData = inputList[index];
                           switch (inputData.label) {
-                            case "item":
-                              return ItemPickerWidget(
-                                onSelected: (item, jenis) => setState(() {
-                                  _selectedItem = item;
-                                  _availableItemJenis = jenis;
+                            case "kategori":
+                              return KategoryPickerWidget(
+                                onSelected: (kategori) => setState(() {
+                                  _selectedKategori = kategori;
                                 }),
-                              );
-                            case "keterangan":
-                              return ItemJenisPickerWidget(
-                                onSelected: (item) =>
-                                    setState(() => _selectedJenis = item),
-                                items: _availableItemJenis,
                               );
                             default:
                               return TextFormField(
@@ -148,14 +143,14 @@ class _PembelianPageState extends State<PembelianPage> {
                                   border: const OutlineInputBorder(),
                                 ),
                                 onChanged: (value) =>
-                                    setState(() => _quantity.text = value),
+                                    setState(() => inputData.textController),
                                 validator: (value) =>
                                     inputData.validator(inputData.label, value),
                               );
                           }
                         },
                       ),
-                      ),
+                    ),
                     ButtonWidget(
                       save,
                       title: "Simpan",

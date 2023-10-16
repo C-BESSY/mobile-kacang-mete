@@ -1,12 +1,14 @@
+import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
+
 class PembelianType {
   final int id;
-  final String pembelian;
   final int harga;
   final String keterangan;
   final String date;
+  final KategoriType kategori;
   const PembelianType({
     required this.id,
-    required this.pembelian,
+    required this.kategori,
     required this.harga,
     required this.keterangan,
     required this.date,
