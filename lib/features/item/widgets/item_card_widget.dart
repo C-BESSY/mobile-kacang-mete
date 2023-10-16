@@ -40,8 +40,8 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
             onChanged: () => {
               widget.onChanged(ItemVarianType(
                 id: widget.varian.id,
-                varian: widget.varian.varian,
-                harga: widget.varian.harga,
+                varian: _varian.text,
+                harga: int.parse(_harga.text),
               ))
             },
             key: _formKey,
