@@ -41,6 +41,7 @@ class ItemVarianRepository {
   Future<bool> insertItemVarian(BuildContext context,
       {required Map<String, dynamic> row}) async {
     try {
+      //TODO: check if the row varians is deleted then in db deleted to!
       if (row['id'] == null) {
         await db.insert(tableName, row: row);
       } else {
