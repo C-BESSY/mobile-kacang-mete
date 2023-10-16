@@ -38,6 +38,16 @@ class DBUtil {
     return await database.query(tableName);
   }
 
+  Future<List<Map<String, dynamic>>> getRelation(
+    String tableName, {
+    required String foreignCol,
+    required dynamic foreignKey,
+  }) async {
+    Database database = await db;
+    return await database
+        .query(tableName, where: "$foreignCol = ?", whereArgs: [foreignKey]);
+  }
+
   Future<Map<String, dynamic>?> find(
     String tableName, {
     String col = 'id',
@@ -58,16 +68,15 @@ class DBUtil {
     return await database.insert(tableName, row);
   }
 
-  Future<int> update(Map<String, dynamic> row) async {
+  Future<int> update(String tableName, int id,
+      {required Map<String, dynamic> row}) async {
     Database database = await db;
-    int id = row['id'];
     return await database
-        .update('your_table', row, where: 'id = ?', whereArgs: [id]);
+        .update(tableName, row, where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String tableName, int id) async {
     Database database = await db;
-    return await database
-        .delete('your_table', where: 'id = ?', whereArgs: [id]);
+    return await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 }
