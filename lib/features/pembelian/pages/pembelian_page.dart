@@ -6,6 +6,7 @@ import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
@@ -21,13 +22,16 @@ class PembelianPage extends StatefulWidget {
 class _PembelianPageState extends State<PembelianPage> {
   final TextEditingController _keterangan = TextEditingController();
   final TextEditingController _harga = TextEditingController();
+  final TextEditingController _waktu = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   KategoriType? _selectedKategori;
+  String? newKategori;
   List<ItemJenisType> _availableItemJenis = [];
   late final List<InputType> inputList = [
-    InputType("kategori", TextInputType.text, _keterangan),
+    InputType("Kategori", TextInputType.text, _keterangan),
     InputType("Keterangan", TextInputType.text, _keterangan),
+    InputType("waktu", TextInputType.text, _waktu),
     InputType("Harga", TextInputType.number, _harga),
   ];
 
@@ -37,6 +41,8 @@ class _PembelianPageState extends State<PembelianPage> {
           context, MaterialPageRoute(builder: (context) => const BasePage()));
     }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -128,11 +134,33 @@ class _PembelianPageState extends State<PembelianPage> {
                         itemBuilder: (context, int index) {
                           final inputData = inputList[index];
                           switch (inputData.label) {
-                            case "kategori":
-                              return KategoryPickerWidget(
-                                onSelected: (kategori) => setState(() {
-                                  _selectedKategori = kategori;
-                                }),
+                            case "Kategori":
+                              return Column(children: [
+                                KategoryPickerWidget(
+                                  onSelected: (kategori) => setState(() {
+                                    _selectedKategori = kategori;
+                                  }),
+                                ),
+                                if (_selectedKategori?.name == "Lainnya")
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: screenHeight * 0.025),
+                                    child: TextFormField(
+                                      keyboardType: inputData.inputType,
+                                      decoration: InputDecoration(
+                                        labelText: inputData.label,
+                                        border: const OutlineInputBorder(),
+                                      ),
+                                      onChanged: (value) =>
+                                          setState(() => newKategori = value),
+                                      validator: (value) => inputData.validator(
+                                          inputData.label, value),
+                                    ),
+                                  ),
+                              ]);
+                            case "waktu":
+                              return DatePickerWidget(
+                                onSelected: (DateTime date) {},
                               );
                             default:
                               return TextFormField(

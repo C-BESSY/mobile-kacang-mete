@@ -17,6 +17,7 @@ class _KategoryPickerWidgetState extends State<KategoryPickerWidget> {
   final List<KategoriType> items = [
     const KategoriType(id: 1, name: "Kacang Mete"),
     const KategoriType(id: 1, name: "Plastik"),
+    const KategoriType(id: 1, name: "Lainnya"),
   ];
 
   List<KategoriType> searchItem(String pattern) {

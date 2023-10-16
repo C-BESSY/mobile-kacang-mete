@@ -5,6 +5,7 @@ import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
 import 'dart:core';
@@ -25,6 +26,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
   late final List<InputType> inputList = [
     InputType("item", TextInputType.text, _quantity),
     InputType("jenis", TextInputType.text, _quantity),
+    InputType("waktu", TextInputType.text, _quantity),
     InputType("Jumlah", TextInputType.number, _quantity),
   ];
 
@@ -140,6 +142,10 @@ class _PenjualanPageState extends State<PenjualanPage> {
                                 onSelected: (item) =>
                                     setState(() => _selectedJenis = item),
                                 items: _availableItemJenis,
+                              );
+                            case "waktu":
+                              return DatePickerWidget(
+                                onSelected: (DateTime date) {},
                               );
                             default:
                               if (_selectedJenis != null) {
