@@ -22,8 +22,7 @@ class ItemVarianRepository {
     }
   }
 
-  Future<List<ItemVarianType>> getVariansByItem(
-    BuildContext context, {
+  Future<List<ItemVarianType>> getVariansByItem({
     required int itemId,
   }) async {
     try {

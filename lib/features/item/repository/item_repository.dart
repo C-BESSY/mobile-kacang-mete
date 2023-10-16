@@ -14,7 +14,11 @@ class ItemRepository {
   Future<List<ItemType>> getItems(BuildContext context) async {
     try {
       final datas = await db.getTableData(tableName);
-      return datas.map((data) => ItemType.fromDB(data)).toList();
+      final List<ItemType> dataToBeReturn = [];
+      for (var element in datas) {
+        dataToBeReturn.add(await ItemType.fromDB(element));
+      }
+      return dataToBeReturn;
     } catch (error) {
       print(error);
       return [];
