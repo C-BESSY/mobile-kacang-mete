@@ -1,26 +1,4 @@
-import 'dart:io' as io;
-import 'package:path/path.dart' as p;
-
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-class DBProvider extends ChangeNotifier {
-  Database? _db;
-  Database? get db => _db;
-
-  Future initDatabase() async {
-    sqfliteFfiInit();
-    var databaseFactory = databaseFactoryFfi;
-    final io.Directory appDocumentsDir =
-        await getApplicationDocumentsDirectory();
-    String dbPath = p.join(appDocumentsDir.path, "databases", "kacangMete.db");
-    _db = await databaseFactory.openDatabase(
-      dbPath,
-      options: OpenDatabaseOptions(
-        version: 1,
-        onCreate: (Database db, int version) async {
-          await db.execute('''
+String queryInitDb = '''
     CREATE TABLE item
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,10 +39,4 @@ class DBProvider extends ChangeNotifier {
       item_varian_id INT NOT NULL,
       FOREIGN KEY (item_varian_id) REFERENCES item_varian(id)
     );
-    ''');
-        },
-      ),
-    );
-    notifyListeners();
-  }
-}
+''';

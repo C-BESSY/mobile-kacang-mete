@@ -4,18 +4,17 @@ class ButtonWidget extends StatelessWidget {
   final String text;
   final Color color;
   final VoidCallback onPressed;
-  final Color defaultColor = Color.fromARGB(246, 105, 16, 206);
-  ButtonWidget(this.onPressed, {super.key, title, color})
+  final Color defaultColor = const Color.fromARGB(246, 105, 16, 206);
+  const ButtonWidget(this.onPressed, {super.key, title, color})
       : text = title ?? "Apply",
-      color = color ?? Color.fromARGB(246, 105, 16, 206);
+        color = color ?? const Color.fromARGB(246, 105, 16, 206);
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding:
-        EdgeInsets.only(top: color == defaultColor ? screenHeight * 0.1 : 0),
+          EdgeInsets.only(top: color == defaultColor ? screenHeight * 0.1 : 0),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
@@ -28,7 +27,7 @@ class ButtonWidget extends StatelessWidget {
               ),
             ),
             fixedSize:
-              MaterialStateProperty.all(Size.fromHeight(screenHeight * 0.06)),
+                MaterialStateProperty.all(Size.fromHeight(screenHeight * 0.06)),
             foregroundColor: MaterialStateProperty.resolveWith<Color>(
               (Set<MaterialState> states) {
                 return Colors.white;
