@@ -7,6 +7,7 @@ import 'package:kacang_mete/features/item/types/item_jenis_type.dart';
 import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
+import 'dart:core';
 
 class PenjualanPage extends StatefulWidget {
   const PenjualanPage({super.key});
@@ -20,16 +21,17 @@ class _PenjualanPageState extends State<PenjualanPage> {
   ItemType? _selectedItem;
   ItemJenisType? _selectedJenis;
   List<ItemJenisType> _availableItemJenis = [];
-  final TextEditingController _quantity = TextEditingController(text: "0");
+  final TextEditingController _quantity = TextEditingController(text: "");
   late final List<InputType> inputList = [
     InputType("item", TextInputType.text, _quantity),
     InputType("jenis", TextInputType.text, _quantity),
     InputType("Jumlah", TextInputType.number, _quantity),
   ];
 
-  String get theTotal => _selectedJenis == null && _quantity.text == "0"
+  String get theTotal => _selectedJenis == null
       ? intToIDR(0)
-      : intToIDR(int.parse(_quantity.text) * _selectedJenis!.harga);
+      : intToIDR(int.parse(_quantity.text == "" ? "0" : _quantity.text) *
+          _selectedJenis!.harga);
 
   void save() async {
     if (_formKey.currentState!.validate()) {
@@ -140,19 +142,26 @@ class _PenjualanPageState extends State<PenjualanPage> {
                                 items: _availableItemJenis,
                               );
                             default:
-                              return TextFormField(
-                                controller: inputData.textController,
-                                keyboardType: inputData.inputType,
-                                decoration: InputDecoration(
-                                  labelText: inputData.label,
-                                  border: const OutlineInputBorder(),
-                                ),
-                                onChanged: (value) =>
-                                    setState(() => _quantity.text = value),
-                                validator: (value) =>
-                                    inputData.validator(inputData.label, value),
-                              );
+                              if (_selectedJenis != null) {
+                                return TextFormField(
+                                  controller: inputData.textController,
+                                  keyboardType: inputData.inputType,
+                                  decoration: InputDecoration(
+                                    labelText: inputData.label,
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                  onChanged: (value) {
+                                    if (!RegExp(r'[a-zA-Z\W]')
+                                        .hasMatch(value)) {
+                                      setState(() => _quantity.text = value);
+                                    }
+                                  },
+                                  validator: (value) => inputData.validator(
+                                      inputData.label, value),
+                                );
+                              }
                           }
+                          return null;
                         },
                       ),
                     ),
