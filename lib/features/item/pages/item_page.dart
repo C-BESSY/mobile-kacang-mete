@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
-import 'package:kacang_mete/common/widget/show_dialog_widget.dart';
 import 'package:kacang_mete/features/item/repository/item_repository.dart';
 import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/item/widgets/item_card_widget.dart';
@@ -29,27 +27,12 @@ class _ItemPageState extends State<ItemPage> {
 
   Future save() async {
     if (_formKey.currentState!.validate()) {
-      final res = await _repository.insertItem(
+      await _repository.insertItem(
         context,
         itemName: _selectedItem!,
         rawName: _rawName,
         variants: variants,
       );
-      if (res) {
-        //FIX: show dialog not showing?
-        Future.delayed(Duration.zero, () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return const ShowDialogWidget(
-                message: "Sukses Membuat Item Baru",
-              );
-            },
-          );
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const BasePage()));
-        });
-      }
     }
   }
 

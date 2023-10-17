@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:kacang_mete/common/page/base_page.dart';
 
 enum DialogState { success, warning, info, error }
 
 class ShowDialogWidget extends StatelessWidget {
   final String message;
   final DialogState state;
+  final VoidCallback onPressed;
 
-  const ShowDialogWidget(
-      {super.key, required this.message, this.state = DialogState.success});
+  const ShowDialogWidget({
+    super.key,
+    required this.message,
+    this.state = DialogState.success,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +49,28 @@ class ShowDialogWidget extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: onPressed,
           child: const Text('OK'),
         ),
       ],
     );
   }
+}
+
+void showSuccessMessage(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return ShowDialogWidget(
+        message: message,
+        state: DialogState.success,
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const BasePage()));
+        },
+      );
+    },
+  );
 }
 
 void showErrorApi(BuildContext context, dynamic error) {
@@ -66,6 +86,9 @@ void showErrorApi(BuildContext context, dynamic error) {
       return ShowDialogWidget(
         message: errorMessage,
         state: DialogState.error,
+        onPressed: () {
+          Navigator.pop(context);
+        },
       );
     },
   );

@@ -47,6 +47,21 @@ class ItemRepository {
     }
   }
 
+  Future<bool> deleteItem(
+    BuildContext context, {
+    required ItemType item,
+  }) async {
+    try {
+      await db.delete(tableName, item.id);
+      showSuccessMessage(context, "Sukses Menghapus Item");
+      return true;
+    } catch (error) {
+      showErrorApi(context, error);
+      print(error);
+      return false;
+    }
+  }
+
   Future<bool> insertItem(
     BuildContext context, {
     required String itemName,
@@ -78,6 +93,9 @@ class ItemRepository {
         await ItemVarianRepository()
             .insertItemVarian(context, varian: varian..itemId = itemId);
       }
+
+      showSuccessMessage(
+          context, "Sukses ${item == null ? 'Menambah' : 'Mengubah'} Item");
       return true;
     } catch (error) {
       print(error);
