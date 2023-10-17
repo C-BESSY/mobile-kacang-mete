@@ -42,6 +42,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                 id: widget.varian.id,
                 varian: _varian.text,
                 harga: int.parse(_harga.text),
+                itemId: widget.varian.itemId,
               ))
             },
             key: _formKey,

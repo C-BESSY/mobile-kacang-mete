@@ -5,7 +5,7 @@ import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemJenisPickerWidget extends StatefulWidget {
   final Function(ItemVarianType) onSelected;
-  final List<ItemVarianType> items;
+  final List<ItemVarianType> items; 
   const ItemJenisPickerWidget({
     super.key,
     required this.onSelected,

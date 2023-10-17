@@ -11,6 +11,17 @@ class ItemRepository {
   final DBUtil db = DBUtil();
   final String tableName = "item";
 
+  Future<ItemType?> getItem({required int itemId}) async {
+    try {
+      final data = await db.find(tableName, args: itemId);
+      if (data != null) return ItemType.fromDB(data);
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<List<ItemType>> getItems(BuildContext context) async {
     try {
       final datas = await db.getTableData(tableName);

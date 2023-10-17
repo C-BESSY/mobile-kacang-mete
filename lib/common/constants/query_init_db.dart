@@ -17,7 +17,7 @@ String queryInitDb = '''
     CREATE TABLE kategori
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nama VARCHAR(150) NOT NULL
+      name VARCHAR(150) NOT NULL
     );
 
     CREATE TABLE pembelian

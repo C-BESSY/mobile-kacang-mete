@@ -44,9 +44,9 @@ class ItemVarianRepository {
       //TODO: check if the row varians is deleted then in db deleted to!
       if (row['id'] == null) {
         await db.insert(tableName, row: row);
-      } else {
+      } else if (row['id'] != null){
         await db.update(tableName, row['id'], row: row);
-      }
+      } 
       return true;
     } catch (error) {
       print(error);

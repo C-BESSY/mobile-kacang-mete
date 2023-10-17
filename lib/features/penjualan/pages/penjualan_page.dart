@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
@@ -9,7 +10,10 @@ import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_jenis_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/item_picker_widget.dart';
+import 'package:kacang_mete/features/penjualan/repository/penjualan_repository.dart';
 import 'dart:core';
+
+import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 
 class PenjualanPage extends StatefulWidget {
   const PenjualanPage({super.key});
@@ -23,6 +27,8 @@ class _PenjualanPageState extends State<PenjualanPage> {
   ItemType? _selectedItem;
   ItemVarianType? _selectedJenis;
   List<ItemVarianType> _availableItemJenis = [];
+  String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
   final TextEditingController _quantity = TextEditingController(text: "");
   late final List<InputType> inputList = [
     InputType("item", TextInputType.text, _quantity),
@@ -38,7 +44,15 @@ class _PenjualanPageState extends State<PenjualanPage> {
 
   void save() async {
     if (_formKey.currentState!.validate()) {
-      final theData = _selectedItem!.toMap();
+      final PenjualanType theData = PenjualanType(
+        id: 0,
+        quantity: int.parse(_quantity.text),
+        storedPrice: int.parse(_quantity.text == "" ? "0" : _quantity.text) *
+            _selectedJenis!.harga,
+        varian: _selectedJenis!,
+        date: selectedDate,
+      );
+      await PenjualanRepository().insertPenjualan(context, penjualan: theData);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const BasePage()));
     }
@@ -137,7 +151,9 @@ class _PenjualanPageState extends State<PenjualanPage> {
                               );
                             case "waktu":
                               return DatePickerWidget(
-                                onSelected: (DateTime date) {},
+                                onSelected: (DateTime date) => setState(() =>
+                                    selectedDate =
+                                        DateFormat('yyyy-MM-dd').format(date)),
                               );
                             default:
                               if (_selectedJenis != null) {

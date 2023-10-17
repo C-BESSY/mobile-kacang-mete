@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/features/item/types/item_varian_type.dart';
+import 'package:kacang_mete/features/pembelian/repository/kategori_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 
 class KategoryPickerWidget extends StatefulWidget {
@@ -14,13 +15,12 @@ class KategoryPickerWidget extends StatefulWidget {
 
 class _KategoryPickerWidgetState extends State<KategoryPickerWidget> {
   final TextEditingController _selectedItem = TextEditingController();
-  final List<KategoriType> items = [
-    const KategoriType(id: 1, name: "Kacang Mete"),
-    const KategoriType(id: 1, name: "Plastik"),
-    const KategoriType(id: 1, name: "Lainnya"),
-  ];
 
-  List<KategoriType> searchItem(String pattern) {
+  Future<List<KategoriType>> searchItem(String pattern) async {
+    final items = await KategoriRepository().getKategoris()
+      ..add(
+        const KategoriType(id: 0, name: "Lainnya"),
+      );
     return items
         .where(
             (item) => item.name.toLowerCase().contains(pattern.toLowerCase()))

@@ -13,4 +13,13 @@ class PembelianType {
     required this.keterangan,
     required this.date,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "harga": harga,
+      "keterangan": keterangan,
+      "tgl": date,
+      "kategori": kategori.name
+    };
+  }
 }

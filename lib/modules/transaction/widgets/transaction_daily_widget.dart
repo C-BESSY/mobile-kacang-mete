@@ -28,19 +28,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
       date: "2023-10-10",
       kategori: KategoriType(id: 1, name: "Plastik"),
     ),
-    const PenjualanType(
-      id: 1,
-      quantity: 10,
-      storedPrice: 100000,
-      date: "2023-10-10",
-      item: ItemType(
-        id: 1,
-        name: "Kacang Mete",
-        varian: [
-          ItemVarianType(id: 1, varian: "1kg", harga: 1000000),
-        ],
-      ),
-    )
   ];
 
   @override
@@ -97,13 +84,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
                 type: TransactionType.pembelian,
                 item: item.kategori.name,
                 ammount: item.harga,
-                date: item.date,
-              );
-            } else if (item is PenjualanType) {
-              return TransactionItemWidget(
-                type: TransactionType.penjualan,
-                item: item.item.name,
-                ammount: item.storedPrice,
                 date: item.date,
               );
             }

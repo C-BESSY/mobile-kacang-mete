@@ -24,6 +24,7 @@ class _ItemPageState extends State<ItemPage> {
       ? "-"
       : (_selectedItem! == "" ? "-" : _selectedItem!);
   bool isCreateNew = true;
+  bool isDelete = false;
   List<ItemVarianType> variants = [];
 
   Future save() async {
@@ -169,7 +170,11 @@ class _ItemPageState extends State<ItemPage> {
                                 TextButton(
                                   onPressed: () => setState(() {
                                     variants.add(const ItemVarianType(
-                                        id: null, varian: "", harga: 0));
+                                      id: null,
+                                      varian: "",
+                                      harga: 0,
+                                      itemId: 0,
+                                    ));
                                   }),
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(

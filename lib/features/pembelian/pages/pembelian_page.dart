@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
 import 'package:kacang_mete/features/item/types/item_varian_type.dart';
+import 'package:kacang_mete/features/pembelian/repository/pembelian_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
 import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
+import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 
 class PembelianPage extends StatefulWidget {
   const PembelianPage({super.key});
@@ -19,27 +22,33 @@ class PembelianPage extends StatefulWidget {
 class _PembelianPageState extends State<PembelianPage> {
   final TextEditingController _keterangan = TextEditingController();
   final TextEditingController _harga = TextEditingController();
-  final TextEditingController _waktu = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   KategoriType? _selectedKategori;
   String? newKategori;
+  String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
   List<ItemVarianType> _availableItemJenis = [];
   late final List<InputType> inputList = [
     InputType("Kategori", TextInputType.text, _keterangan),
     InputType("Keterangan", TextInputType.text, _keterangan),
-    InputType("waktu", TextInputType.text, _waktu),
+    InputType("waktu", TextInputType.text, _keterangan),
     InputType("Harga", TextInputType.number, _harga),
   ];
 
   void save() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const BasePage()));
+      final PembelianType theData = PembelianType(
+        id: 0,
+        harga: int.parse(_harga.text),
+        keterangan: _keterangan.text,
+        date: selectedDate!,
+        kategori: newKategori != null
+            ? KategoriType(id: 0, name: newKategori!)
+            : _selectedKategori!,
+      );
+      await PembelianRepository().insertPembelian(context, pembelian: theData);
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +98,7 @@ class _PembelianPageState extends State<PembelianPage> {
                 ),
               ),
               Container(
-                height: screenHeight * 0.62,
+                height: screenHeight * 0.82,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius:
@@ -147,7 +156,9 @@ class _PembelianPageState extends State<PembelianPage> {
                               ]);
                             case "waktu":
                               return DatePickerWidget(
-                                onSelected: (DateTime date) {},
+                                onSelected: (DateTime date) => setState(() =>
+                                    selectedDate =
+                                        DateFormat('yyyy-MM-dd').format(date)),
                               );
                             default:
                               return TextFormField(
@@ -157,8 +168,8 @@ class _PembelianPageState extends State<PembelianPage> {
                                   labelText: inputData.label,
                                   border: const OutlineInputBorder(),
                                 ),
-                                onChanged: (value) =>
-                                    setState(() => inputData.textController),
+                                onChanged: (value) => setState(() =>
+                                    inputData.textController.text = value),
                                 validator: (value) =>
                                     inputData.validator(inputData.label, value),
                               );

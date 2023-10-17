@@ -1,22 +1,30 @@
 import 'package:kacang_mete/features/item/types/item_type.dart';
+import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class PenjualanType {
   final int id;
   final int quantity;
   final int storedPrice;
-  final ItemType item;
+  final ItemVarianType varian;
   final String date;
   const PenjualanType({
     required this.id,
     required this.quantity,
     required this.storedPrice,
-    required this.item,
+    required this.varian,
     required this.date,
   });
 
-  int get currentPrice {
-    final item = this.item;
-    if (item.varian.isEmpty) return 0;
-    return item.varian.first.harga * quantity;
+  Future<ItemType> get item {
+    return varian.getItem();
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "qty": quantity,
+      "stored_price": storedPrice,
+      "tgl": date,
+      "item_varian_id": varian.id
+    };
   }
 }
