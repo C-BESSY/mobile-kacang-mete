@@ -3,10 +3,10 @@ import 'package:kacang_mete/features/item/types/item_type.dart';
 
 class ItemVarianType {
   final int? id;
-  final int itemId;
+  int itemId;
   final String varian;
   final int harga;
-  const ItemVarianType({
+  ItemVarianType({
     this.id,
     required this.varian,
     required this.harga,
@@ -18,6 +18,7 @@ class ItemVarianType {
       'id': id,
       'varian': varian,
       'harga': harga,
+      'item_id': itemId,
     };
   }
 

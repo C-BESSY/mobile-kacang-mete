@@ -169,7 +169,7 @@ class _ItemPageState extends State<ItemPage> {
                                 ),
                                 TextButton(
                                   onPressed: () => setState(() {
-                                    variants.add(const ItemVarianType(
+                                    variants.add(ItemVarianType(
                                       id: null,
                                       varian: "",
                                       harga: 0,
@@ -195,7 +195,7 @@ class _ItemPageState extends State<ItemPage> {
                               itemBuilder: (context, index) {
                                 final item = variants[index];
                                 return ItemCardWidget(
-                                key: UniqueKey(),
+                                  key: UniqueKey(),
                                   varian: item,
                                   onPressed: () => setState(() {
                                     variants.removeAt(index);

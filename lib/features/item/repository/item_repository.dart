@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
@@ -14,6 +14,17 @@ class ItemRepository {
   Future<ItemType?> getItem({required int itemId}) async {
     try {
       final data = await db.find(tableName, args: itemId);
+      if (data != null) return ItemType.fromDB(data);
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  Future<ItemType?> getItemByName({required String itemName}) async {
+    try {
+      final data = await db.find(tableName, col: 'name', args: itemName);
       if (data != null) return ItemType.fromDB(data);
       return null;
     } catch (error) {
@@ -43,21 +54,29 @@ class ItemRepository {
     required List<ItemVarianType> variants,
   }) async {
     try {
-      final item =
-          await db.find(tableName, col: 'name', args: rawName ?? itemName);
+      final item = await getItemByName(itemName: rawName ?? itemName);
       final row = {
         'name': itemName,
       };
-      int itemId = 0;
-      if (item == null) {
-        itemId = await db.insert(tableName, row: row);
-      } else {
-        itemId = item['id'];
+      int itemId =
+          item == null ? await db.insert(tableName, row: row) : item.id;
+
+      if (item != null) {
         await db.update(tableName, itemId, row: row);
+        final currentVarian =
+            await ItemVarianRepository().getVariansByItem(itemId: itemId);
+        final deletedVarian = currentVarian
+            .where((variant) => !variants.contains(variant))
+            .toList();
+        for (var deletedVar in deletedVarian) {
+          await ItemVarianRepository()
+              .deleteItemVarian(context, varian: deletedVar);
+        }
       }
+
       for (var varian in variants) {
-        await ItemVarianRepository().insertItemVarian(context,
-            row: {'item_id': itemId}..addAll(varian.toMap()));
+        await ItemVarianRepository()
+            .insertItemVarian(context, varian: varian..itemId = itemId);
       }
       return true;
     } catch (error) {

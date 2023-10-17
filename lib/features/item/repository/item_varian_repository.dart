@@ -1,5 +1,8 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
+import 'package:kacang_mete/common/widget/show_dialog_widget.dart';
 import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemVarianRepository {
@@ -38,17 +41,33 @@ class ItemVarianRepository {
     }
   }
 
-  Future<bool> insertItemVarian(BuildContext context,
-      {required Map<String, dynamic> row}) async {
+  Future<bool> insertItemVarian(
+    BuildContext context, {
+    required ItemVarianType varian,
+  }) async {
     try {
-      //TODO: check if the row varians is deleted then in db deleted to!
-      if (row['id'] == null) {
-        await db.insert(tableName, row: row);
-      } else if (row['id'] != null){
-        await db.update(tableName, row['id'], row: row);
-      } 
+      if (varian.id == null) {
+        await db.insert(tableName, row: varian.toMap());
+      } else {
+        await db.update(tableName, varian.id!, row: varian.toMap());
+      }
       return true;
     } catch (error) {
+      showErrorApi(context, error);
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> deleteItemVarian(
+    BuildContext context, {
+    required ItemVarianType varian,
+  }) async {
+    try {
+      await db.delete(tableName, varian.id!);
+      return true;
+    } catch (error) {
+      showErrorApi(context, error);
       print(error);
       return false;
     }
