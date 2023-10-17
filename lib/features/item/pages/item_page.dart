@@ -188,7 +188,7 @@ class _ItemPageState extends State<ItemPage> {
                                     variants.removeAt(index);
                                   }),
                                   onChanged: (varian) =>
-                                      setState(() => variants[index] = varian),
+                                      variants[index] = varian,
                                 );
                               },
                             )
