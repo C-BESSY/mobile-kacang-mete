@@ -195,8 +195,8 @@ class _ItemPageState extends State<ItemPage> {
                               itemBuilder: (context, index) {
                                 final item = variants[index];
                                 return ItemCardWidget(
+                                key: UniqueKey(),
                                   varian: item,
-                                  //FIX: remove at still not working
                                   onPressed: () => setState(() {
                                     variants.removeAt(index);
                                   }),
