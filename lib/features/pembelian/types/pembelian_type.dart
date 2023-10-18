@@ -1,3 +1,4 @@
+import 'package:kacang_mete/features/pembelian/repository/kategori_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 
 class PembelianType {
@@ -21,5 +22,18 @@ class PembelianType {
       "tgl": date,
       "kategori": kategori.name
     };
+  }
+
+  static Future<PembelianType> fromDB(Map<String, dynamic> data) async {
+    final KategoriType kategori =
+        await KategoriRepository().getKategori(id: data['kategori_id']) ??
+            const KategoriType(id: 0, name: "Kategori tidak ditemukan/dihapus");
+    return PembelianType(
+      id: data['id'],
+      harga: data['harga'],
+      keterangan: data['keterangan'],
+      date: data['tgl'],
+      kategori: kategori,
+    );
   }
 }

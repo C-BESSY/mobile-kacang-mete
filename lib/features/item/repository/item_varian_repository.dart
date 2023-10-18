@@ -9,11 +9,11 @@ class ItemVarianRepository {
   final DBUtil db = DBUtil();
   final String tableName = "item_varian";
 
-  Future<ItemVarianType?> getVarians(context, {required int varianId}) async {
+  Future<ItemVarianType?> getVarian({required int id}) async {
     try {
       final data = await db.find(
         tableName,
-        args: varianId,
+        args: id,
       );
       if (data == null) {
         throw "Not Found";

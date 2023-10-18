@@ -13,6 +13,19 @@ class PembelianRepository {
   final DBUtil db = DBUtil();
   final String tableName = "pembelian";
 
+  Future<PembelianType?> getPembelian({
+    required int id,
+  }) async {
+    try {
+      final data = await db.find(tableName, args: id);
+      if (data != null) return PembelianType.fromDB(data);
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<bool> insertPembelian(
     BuildContext context, {
     required PembelianType pembelian,

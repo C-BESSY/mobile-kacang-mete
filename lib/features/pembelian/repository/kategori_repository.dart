@@ -5,6 +5,19 @@ class KategoriRepository {
   final DBUtil db = DBUtil();
   final String tableName = "kategori";
 
+  Future<KategoriType?> getKategori({
+    required int id,
+  }) async {
+    try {
+      final data = await db.find(tableName, args: id);
+      if (data != null) return KategoriType.fromDB(data);
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<KategoriType?> getKategoriByName(
       {required String kategoriName}) async {
     try {

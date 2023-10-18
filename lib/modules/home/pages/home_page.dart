@@ -9,6 +9,7 @@ import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
+import 'package:kacang_mete/modules/home/repository/home_repository.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,20 +21,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late DateTime _selectedDate;
-  final recentTransaction = [
-    const PembelianType(
-      id: 1,
-      harga: 1000000,
-      keterangan: "Beli Plastik",
-      date: "2023-10-10",
-      kategori: KategoriType(id: 1, name: "Plastik"),
-    ),
-  ];
+  OverviewData overviewData =
+      OverviewData(pembelian: 0, penjualan: 0, balance: 0);
+  List<dynamic> recentTransaction = [];
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    HomeRepository()
+        .getOverview(_selectedDate)
+        .then((value) => overviewData = value);
+    HomeRepository().getRecentTrasaction().then((value) {
+      setState(() => recentTransaction = value);
+      print(value);
+    });
   }
 
   @override
@@ -65,8 +67,15 @@ class _HomePageState extends State<HomePage> {
                       showMonthPicker(
                         context: context,
                         initialDate: DateTime.now(),
-                      ).then((date) => setState(
-                          () => _selectedDate = date ?? _selectedDate));
+                      ).then((date) {
+                        HomeRepository()
+                            .getOverview(date ?? _selectedDate)
+                            .then((value) =>
+                                setState(() => overviewData = value));
+                        setState(() {
+                          _selectedDate = date ?? _selectedDate;
+                        });
+                      });
                     },
                     style: const ButtonStyle(
                         foregroundColor:
@@ -86,8 +95,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          const CardOverviewWidget(
-            title: 'Rp. 9.400.000',
+          CardOverviewWidget(
+            overviewData: overviewData,
             description: "Account Balance",
           ),
           Padding(
@@ -125,7 +134,7 @@ class _HomePageState extends State<HomePage> {
           ),
           ListView.separated(
             shrinkWrap: true,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(bottom: screenHeight * 0.1),
             itemCount: recentTransaction.length,
             separatorBuilder: (context, index) =>
                 SizedBox(height: screenHeight * 0.02),
@@ -136,6 +145,15 @@ class _HomePageState extends State<HomePage> {
                   type: TransactionType.pembelian,
                   item: item.kategori.name,
                   ammount: item.harga,
+                  date: item.date,
+                );
+              } else if (item is PenjualanType) {
+                String itemName = "";
+                item.varian.getItem().then((value) => itemName = value.name);
+                return TransactionItemWidget(
+                  type: TransactionType.penjualan,
+                  item: "$itemName - ${item.varian.varian}",
+                  ammount: item.storedPrice,
                   date: item.date,
                 );
               }

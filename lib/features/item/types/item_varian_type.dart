@@ -33,6 +33,7 @@ class ItemVarianType {
 
   Future<ItemType> getItem() async {
     final data = await ItemRepository().getItem(itemId: itemId);
-    return data!;
+    return data ??
+        const ItemType(id: 0, name: "Item tidak ditemukan", varian: []);
   }
 }

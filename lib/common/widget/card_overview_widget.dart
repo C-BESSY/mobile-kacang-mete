@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 
 class CardOverviewWidget extends StatelessWidget {
-  final String title;
+  final OverviewData overviewData;
   final String description;
   const CardOverviewWidget({
     super.key,
-    required this.title,
+    required this.overviewData,
     required this.description,
   });
 
@@ -22,7 +23,7 @@ class CardOverviewWidget extends StatelessWidget {
           ),
         ),
         Text(
-          title,
+          intToIDR(overviewData.balance),
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: screenHeight * 0.05,
@@ -36,13 +37,13 @@ class CardOverviewWidget extends StatelessWidget {
               mainColor: Colors.green.shade500,
               title: 'Income',
               iconPath: 'assets/icons/icon-income.png',
-              value: "Rp. 5.000.000",
+              value: intToIDR(overviewData.penjualan),
             ),
             _CardWidget(
               mainColor: Colors.red.shade500,
               title: 'Expense',
               iconPath: 'assets/icons/icon-expenses.png',
-              value: "Rp. 5.000.000",
+              value: intToIDR(overviewData.pembelian),
             ),
           ],
         )
@@ -114,4 +115,15 @@ class _CardWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class OverviewData {
+  final int pembelian;
+  final int penjualan;
+  final int balance;
+  OverviewData({
+    required this.pembelian,
+    required this.penjualan,
+    required this.balance,
+  });
 }

@@ -33,6 +33,22 @@ class DBUtil {
     return db;
   }
 
+  Future<List<Map<String, dynamic>>> runRawQuery(String query) async {
+    Database database = await db;
+    return await database.rawQuery(query);
+  }
+
+  Future<int> getSumHargaByMonthYear(bool isPembelian, DateTime date) async {
+    Database database = await db;
+    final query = await database.rawQuery('''
+      SELECT SUM(${isPembelian ? 'p.harga' : 'p.stored_price'}) as total
+      FROM ${isPembelian ? 'pembelian' : 'penjualan'} p
+      WHERE strftime('%Y', p.tgl) = '${date.year}' AND strftime('%m', p.tgl) = '${date.month}';
+''');
+    if (query.first['total'] == null || query.isEmpty) return 0;
+    return query.first['total'] as int;
+  }
+
   Future<List<Map<String, dynamic>>> getTableData(String tableName) async {
     Database database = await db;
     return await database.query(tableName);

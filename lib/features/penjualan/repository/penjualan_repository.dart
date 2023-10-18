@@ -12,6 +12,19 @@ class PenjualanRepository {
   final DBUtil db = DBUtil();
   final String tableName = "penjualan";
 
+  Future<PenjualanType?> getPenjualan({
+    required int id,
+  }) async {
+    try {
+      final data = await db.find(tableName, args: id);
+      if (data != null) return PenjualanType.fromDB(data);
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<bool> insertPenjualan(
     BuildContext context, {
     required PenjualanType penjualan,
