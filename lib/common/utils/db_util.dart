@@ -49,6 +49,7 @@ class DBUtil {
     return query.first['total'] as int;
   }
 
+ 
   Future<List<Map<String, dynamic>>> getTableData(String tableName) async {
     Database database = await db;
     return await database.query(tableName);

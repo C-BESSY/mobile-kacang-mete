@@ -1,4 +1,5 @@
 import 'package:kacang_mete/common/utils/db_util.dart';
+import 'package:kacang_mete/common/utils/transaction_mapping.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/features/pembelian/repository/pembelian_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
@@ -19,7 +20,6 @@ class HomeRepository {
 
   Future<List<dynamic>> getRecentTrasaction() async {
     try {
-      final response = [];
       final rawData = await db.runRawQuery('''
       SELECT *
         FROM (
@@ -32,16 +32,8 @@ class HomeRepository {
         order by tgl desc
         limit 10;
         ''');
-      for (var data in rawData) {
-        if (data['is_pembelian'] == 1) {
-          response
-              .add(await PembelianRepository().getPembelian(id: data['id']));
-        } else {
-          response
-              .add(await PenjualanRepository().getPenjualan(id: data['id']));
-        }
-      }
-      return response;
+
+      return await transactionMapping(rawData);
     } catch (error) {
       print("Error : $error");
       return [];
