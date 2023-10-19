@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
-import 'package:kacang_mete/common/widget/card_overview_widget.dart';
-import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 
-class TransactionWeeklyWidget extends StatelessWidget {
-  final String selectedMonth;
-  final DateTime now = DateTime.now();
+class TransactionWeeklyWidget extends StatefulWidget {
+  final DateTime selectedDate;
+  const TransactionWeeklyWidget({
+    super.key,
+    required this.selectedDate,
+  });
 
+  @override
+  State<TransactionWeeklyWidget> createState() =>
+      _TransactionWeeklyWidgetState();
+}
+
+class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
   List<DateTime> _calculateWeekStartDates(DateTime currentDate) {
-    String selectedMonth = _getMonthName(DateTime.now().month);
     List<DateTime> weekStartDates = [];
     DateTime firstDayOfMonth = DateTime(currentDate.year, currentDate.month, 1);
 
     while (currentDate.month == firstDayOfMonth.month) {
       weekStartDates.add(firstDayOfMonth);
-      firstDayOfMonth = firstDayOfMonth.add(Duration(days: 7));
+      firstDayOfMonth = firstDayOfMonth.add(const Duration(days: 7));
     }
     return weekStartDates;
   }
-  
 
-  TransactionWeeklyWidget({super.key, required this.selectedMonth});
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final weekStartDates = _calculateWeekStartDates(now);
+    final weekStartDates = _calculateWeekStartDates(widget.selectedDate);
     final numberOfWeeks = weekStartDates.length;
 
-
     // final numberOfWeeks = 5;
-    
+
     return Column(
       children: [
         // CardOverviewWidget(
@@ -44,7 +46,8 @@ class TransactionWeeklyWidget extends StatelessWidget {
               ? weekStartDates[weekIndex + 1].subtract(Duration(days: 1))
               : DateTime(startDate.year, startDate.month, startDate.day + 6);
 
-          final dateRange = "${startDate.day} ${_getMonthName(startDate.month)} - ${endDate.day} ${_getMonthName(endDate.month)}";
+          final dateRange =
+              "${startDate.day} ${_getMonthName(startDate.month)} - ${endDate.day} ${_getMonthName(endDate.month)}";
 
           return Column(
             children: [
@@ -99,9 +102,21 @@ class TransactionWeeklyWidget extends StatelessWidget {
       ],
     );
   }
+
   String _getMonthName(int month) {
     final months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
     ];
     return months[month - 1];
   }
