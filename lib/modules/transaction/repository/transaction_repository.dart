@@ -1,5 +1,7 @@
+import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
+import 'package:kacang_mete/modules/transaction/types/weekly_income_expense_type.dart';
 
 class TransactionRepository {
   DBUtil db = DBUtil();
@@ -62,11 +64,10 @@ class TransactionRepository {
       return 0;
     }
     return database.first['total_penjualan'] as int;
-  } 
+  }
 
   Future<int> getDailySumExpense(DateTime selectedDate) async {
-    final database = await db.runRawQuery
-    ('''
+    final database = await db.runRawQuery('''
       SELECT SUM(harga) as total_pembelian
       FROM pembelian
       WHERE strftime('%Y', tgl) = '${selectedDate.year}' 
@@ -83,4 +84,27 @@ class TransactionRepository {
   }
 
   // Future<int> getSumIncome()
+
+  Future<WeeklyIncomeExpenseType> getWeeklyIncomeExpense(
+      DateTime startOfWeek, DateTime endOfWeek) async {
+    try {
+      final database = await db.runRawQuery('''
+      SELECT 
+       SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
+       SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+      where tgl BETWEEN '${DateFormat("yyyy-MM-dd").format(startOfWeek)}' and '${DateFormat("yyyy-MM-dd").format(endOfWeek)}'
+    ''');
+      return WeeklyIncomeExpenseType.fromDB(database.first);
+    } catch (error) {
+      print(error);
+      return const WeeklyIncomeExpenseType(sumExpense: 0, sumIncome: 0);
+    }
+  }
 }
