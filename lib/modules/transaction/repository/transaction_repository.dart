@@ -46,4 +46,41 @@ class TransactionRepository {
       return [];
     }
   }
+
+  Future<int> getDailySumIncome(DateTime selectedDate) async {
+    final database = await db.runRawQuery('''
+    SELECT SUM(stored_price) as total_penjualan
+    FROM penjualan
+    WHERE strftime('%Y', tgl) = '${selectedDate.year}' 
+    AND strftime('%m', tgl) = '${selectedDate.month}' 
+    AND strftime('%d', tgl) = '${selectedDate.day}';
+    ''');
+    if (database.isEmpty) {
+      return 0;
+    }
+    if (database.first['total_penjualan'] == null) {
+      return 0;
+    }
+    return database.first['total_penjualan'] as int;
+  } 
+
+  Future<int> getDailySumExpense(DateTime selectedDate) async {
+    final database = await db.runRawQuery
+    ('''
+      SELECT SUM(harga) as total_pembelian
+      FROM pembelian
+      WHERE strftime('%Y', tgl) = '${selectedDate.year}' 
+      AND strftime('%m', tgl) = '${selectedDate.month}' 
+      AND strftime('%d', tgl) = '${selectedDate.day}';
+    ''');
+    if (database.isEmpty) {
+      return 0;
+    }
+    if (database.first['total_pembelian'] == null) {
+      return 0;
+    }
+    return database.first['total_pembelian'] as int;
+  }
+
+  // Future<int> getSumIncome()
 }

@@ -35,11 +35,15 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     List<Widget> data = [];
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    DateTime selectedDate = widget.selectedDate;
+    int sumIncome = 0;
+    int sumExpense = 0;
+
     for (int i = firstDate; (i != 0 && i <= lastDate); i++) {
       List<dynamic> dailyData = await TransactionRepository().getDataDaily(
           DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyIncome = 0;
-      int dailyExpense = 0;
+      int dailyIncome = await TransactionRepository().getDailySumIncome(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      int dailyExpense = await TransactionRepository().getDailySumExpense(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
       data.add(Column(
         children: [
           Padding(
