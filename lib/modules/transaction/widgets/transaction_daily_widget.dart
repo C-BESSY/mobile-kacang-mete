@@ -20,6 +20,7 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
   int lastDate = 0;
   int sumIncome = 0;
   int sumExpense = 0;
+  
   @override
   void initState() {
     super.initState();
@@ -28,7 +29,20 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
         .then((value) => setState(() {
               firstDate = value['firstDate']!;
               lastDate = value['lastDate']!;
+              _getTotal();
             }));
+  }
+
+  void _getTotal() async {
+    for (int i = firstDate; (i != 0 && i <= lastDate); i++) {
+      int dailyIncome = await TransactionRepository().getDailySumIncome(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      int dailyExpense = await TransactionRepository().getDailySumExpense(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+
+      setState(() {
+        sumIncome += dailyIncome;
+        sumExpense += dailyExpense;
+      });
+    }
   }
 
   Future<List<Widget>> get rows async {
@@ -110,10 +124,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
           ),
         ],
       ));
-      // setState(() {
-      //   sumIncome += dailyIncome;
-      //   sumExpense += dailyExpense;
-      // });
     }
     return data;
   }

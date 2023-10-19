@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:kacang_mete/common/types/input_type.dart';
-import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/pembelian/repository/kategori_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 

@@ -83,8 +83,6 @@ class TransactionRepository {
     return database.first['total_pembelian'] as int;
   }
 
-  // Future<int> getSumIncome()
-
   Future<WeeklyIncomeExpenseType> getWeeklyIncomeExpense(
       DateTime startOfWeek, DateTime endOfWeek) async {
     try {
