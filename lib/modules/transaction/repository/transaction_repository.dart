@@ -8,21 +8,25 @@ class TransactionRepository {
   DBUtil db = DBUtil();
 
   Future<DateEdge> getTheEdgeOfDate(DateTime date) async {
-    final query = await db.runRawQuery('''
-     SELECT min(strftime('%d', tgl)) as tgl_awal, max(strftime('%d', tgl)) as tgl_akhir
-      FROM (
-        SELECT id, tgl, true as is_pembelian
-        FROM pembelian
-        UNION ALL
-        SELECT id, tgl, false
-        FROM penjualan
-      )
-      WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${date.month}';
-''');
-    if (query.first['tgl_awal'] == null || query.isEmpty) {
-      return DateEdge.forDaily({'tgl_awal': 0, 'tgl_akhir': 0});
+    try {
+      final query = await db.runRawQuery('''
+        SELECT min(strftime('%d', tgl)) as tgl_awal, max(strftime('%d', tgl)) as tgl_akhir
+        FROM (
+          SELECT id, tgl, true as is_pembelian
+          FROM pembelian
+          UNION ALL
+          SELECT id, tgl, false
+          FROM penjualan
+          )
+        WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${date.month}';
+        ''');
+      if (query.first['tgl_awal'] == null || query.isEmpty)
+        throw "Data masih kosong!";
+      return DateEdge.forDaily(query.first);
+    } catch (error) {
+      print(error);
+      return DateEdge(theStart: 0, theEnd: 0);
     }
-    return DateEdge.forDaily(query.first);
   }
 
   Future<List<dynamic>> getDataDaily(DateTime date) async {
@@ -101,6 +105,27 @@ class TransactionRepository {
     } catch (error) {
       print(error);
       return const WeeklyIncomeExpenseType(sumExpense: 0, sumIncome: 0);
+    }
+  }
+
+  Future<DateEdge> getTheEdgeOfMonth() async {
+    try {
+      final query = await db.runRawQuery('''
+      SELECT min(strftime('%m', tgl)) as bln_awal, max(strftime('%m', tgl)) as bln_akhir
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+    ''');
+      if (query.first['bln_awal'] == null || query.isEmpty)
+        throw "Data masih kosong";
+      return DateEdge.forMonthly(query.first);
+    } catch (error) {
+      print(error);
+      return DateEdge(theStart: 0, theEnd: 0);
     }
   }
 }
