@@ -53,7 +53,7 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
               : DateTime(startDate.year, startDate.month, startDate.day + 6);
 
           final dateRange =
-              "${startDate.day} ${_getMonthName(startDate.month)} - ${endDate.day} ${_getMonthName(endDate.month)}";
+              "${startDate.day} ${getMonthName(startDate.month)} - ${endDate.day} ${getMonthName(endDate.month)}";
 
           return FutureBuilder<IncomeExpenseType>(
             future: transactionRepository.getWeeklyIncomeExpense(startDate, endDate), builder: (context, snapshot) {
@@ -117,23 +117,5 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
         }),
       ],
     );
-  }
-
-  String _getMonthName(int month) {
-    final months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-    return months[month - 1];
   }
 }
