@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
+import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
+import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class TransactionFilter extends StatefulWidget {
@@ -21,11 +23,37 @@ class TransactionFilter extends StatefulWidget {
 
 class _TransactionFilterState extends State<TransactionFilter> {
   late DateTime tempDate;
+  DateEdge dateEdge = const DateEdge(theStart: 0, theEnd: 0);
 
   @override
   void initState() {
     super.initState();
     tempDate = widget.selectedDate;
+    TransactionRepository()
+        .getTheEdgeOfYear()
+        .then((value) => setState(() => dateEdge = value));
+  }
+
+  void _showYearPicker(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: tempDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2200),
+      builder: (context, child) {
+        return Dialog(
+          child: YearPicker(
+            firstDate: DateTime(dateEdge.theStart),
+            lastDate: DateTime(dateEdge.theEnd),
+            selectedDate: tempDate,
+            onChanged: (DateTime value) {
+              setState(() => tempDate = value);
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -135,7 +163,7 @@ class _TransactionFilterState extends State<TransactionFilter> {
                               setState(() => tempDate = date ?? tempDate);
                             });
                           } else {
-                            debugPrint('yg lain');
+                            _showYearPicker(context);
                           }
                         },
                         child: Row(
@@ -145,15 +173,20 @@ class _TransactionFilterState extends State<TransactionFilter> {
                               color: Color.fromARGB(255, 156, 7, 255),
                             ),
                             Text(widget.filterMode ==
-                                    TransactionFilterEnum.harian
+                                        TransactionFilterEnum.harian ||
+                                    widget.filterMode ==
+                                        TransactionFilterEnum.mingguan
                                 ? 'Pilih Bulan'
-                                : ''),
+                                : 'Pilih Tahun'),
                           ],
                         ),
                       ),
                       Container(
                         margin: const EdgeInsets.only(right: 8),
-                        child: Text(dateTimeToMonth(tempDate)),
+                        child: Text(
+                            widget.filterMode == TransactionFilterEnum.bulanan
+                                ? "Tahun ${tempDate.year}"
+                                : dateTimeToMonth(tempDate)),
                       )
                     ],
                   ),
