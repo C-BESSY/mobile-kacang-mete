@@ -125,7 +125,9 @@ class _TransactionFilterState extends State<TransactionFilter> {
                         ),
                         onPressed: () {
                           if (widget.filterMode ==
-                              TransactionFilterEnum.harian) {
+                                  TransactionFilterEnum.harian ||
+                              widget.filterMode ==
+                                  TransactionFilterEnum.mingguan) {
                             showMonthPicker(
                               context: context,
                               initialDate: DateTime.now(),
