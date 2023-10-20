@@ -17,4 +17,11 @@ class DateEdge {
       theEnd: int.parse(data['bln_akhir']),
     );
   }
+
+  factory DateEdge.forYearly(Map<String, dynamic> data) {
+    return DateEdge(
+      theStart: int.parse(data['thn_awal']),
+      theEnd: int.parse(data['thn_akhir']),
+    );
+  }
 }

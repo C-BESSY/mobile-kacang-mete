@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
@@ -20,12 +22,57 @@ class TransactionRepository {
           )
         WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${date.month}';
         ''');
-      if (query.first['tgl_awal'] == null || query.isEmpty)
+      if (query.first['tgl_awal'] == null || query.isEmpty) {
         throw "Data masih kosong!";
+      }
       return DateEdge.forDaily(query.first);
     } catch (error) {
       print(error);
-      return DateEdge(theStart: 0, theEnd: 0);
+      return const DateEdge(theStart: 0, theEnd: 0);
+    }
+  }
+
+  Future<DateEdge> getTheEdgeOfMonth() async {
+    try {
+      final query = await db.runRawQuery('''
+      SELECT min(strftime('%m', tgl)) as bln_awal, max(strftime('%m', tgl)) as bln_akhir
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+    ''');
+      if (query.first['bln_awal'] == null || query.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return DateEdge.forMonthly(query.first);
+    } catch (error) {
+      print(error);
+      return const DateEdge(theStart: 0, theEnd: 0);
+    }
+  }
+
+  Future<DateEdge> getTheEdgeOfYear() async {
+    try {
+      final query = await db.runRawQuery('''
+      SELECT min(strftime('%Y', tgl)) as thn_awal, max(strftime('%Y', tgl)) as thn_akhir
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+    ''');
+      if (query.first['thn_awal'] == null || query.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return DateEdge.forYearly(query.first);
+    } catch (error) {
+      print(error);
+      return const DateEdge(theStart: 0, theEnd: 0);
     }
   }
 
@@ -105,27 +152,6 @@ class TransactionRepository {
     } catch (error) {
       print(error);
       return const WeeklyIncomeExpenseType(sumExpense: 0, sumIncome: 0);
-    }
-  }
-
-  Future<DateEdge> getTheEdgeOfMonth() async {
-    try {
-      final query = await db.runRawQuery('''
-      SELECT min(strftime('%m', tgl)) as bln_awal, max(strftime('%m', tgl)) as bln_akhir
-      FROM (
-        SELECT id, tgl, harga, true as is_pembelian
-        FROM pembelian
-        UNION ALL
-        SELECT id, tgl, stored_price, false
-        FROM penjualan
-      )
-    ''');
-      if (query.first['bln_awal'] == null || query.isEmpty)
-        throw "Data masih kosong";
-      return DateEdge.forMonthly(query.first);
-    } catch (error) {
-      print(error);
-      return DateEdge(theStart: 0, theEnd: 0);
     }
   }
 }
