@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
 import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
-import 'package:kacang_mete/modules/transaction/types/weekly_income_expense_type.dart';
+import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
 class TransactionRepository {
   DBUtil db = DBUtil();
@@ -132,7 +132,7 @@ class TransactionRepository {
     return database.first['total_pembelian'] as int;
   }
 
-  Future<WeeklyIncomeExpenseType> getWeeklyIncomeExpense(
+  Future<IncomeExpenseType> getWeeklyIncomeExpense(
       DateTime startOfWeek, DateTime endOfWeek) async {
     try {
       final database = await db.runRawQuery('''
@@ -148,10 +148,63 @@ class TransactionRepository {
       )
       where tgl BETWEEN '${DateFormat("yyyy-MM-dd").format(startOfWeek)}' and '${DateFormat("yyyy-MM-dd").format(endOfWeek)}'
     ''');
-      return WeeklyIncomeExpenseType.fromDB(database.first);
+      if (database.first['total_pembelian'] == null || database.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
       print(error);
-      return const WeeklyIncomeExpenseType(sumExpense: 0, sumIncome: 0);
+      return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
+    }
+  }
+
+  Future<IncomeExpenseType> getMontlyIncomeExpense(int month) async {
+    try {
+      final database = await db.runRawQuery('''
+      SELECT 
+       SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
+       SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+      where strftime('%m', tgl) = '$month' 
+    ''');
+      if (database.first['total_pembelian'] == null || database.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return IncomeExpenseType.fromDB(database.first);
+    } catch (error) {
+      print(error);
+      return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
+    }
+  }
+
+  Future<IncomeExpenseType> getYearlyIncomeExpense(int year) async {
+    try {
+      final database = await db.runRawQuery('''
+      SELECT 
+       SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
+       SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+      where strftime('%Y', tgl) = '$year' 
+    ''');
+      if (database.first['total_pembelian'] == null || database.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return IncomeExpenseType.fromDB(database.first);
+    } catch (error) {
+      print(error);
+      return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
 }
