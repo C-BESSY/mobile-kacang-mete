@@ -13,7 +13,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class BasePage extends StatefulWidget {
   final bool isTransaction;
-  const BasePage({super.key, isTransaction})
+  final DateTime? selectedDate;
+  const BasePage({super.key, isTransaction, this.selectedDate})
       : isTransaction = isTransaction ?? false;
 
   @override
@@ -25,10 +26,12 @@ class _BasePageState extends State<BasePage> {
   late final _controller;
   bool isCreateOpen = false;
   int get maxCount => item.length;
-  final item = [
+  late final item = [
     const HomePage(),
     const HomePage(),
-    const TransactionPage(),
+    TransactionPage(
+      paramDate: widget.selectedDate,
+    ),
   ];
 
   @override

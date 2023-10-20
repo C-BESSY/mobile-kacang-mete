@@ -119,8 +119,10 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const BasePage(isTransaction: true),
+                        builder: (context) => BasePage(
+                          isTransaction: true,
+                          selectedDate: _selectedDate,
+                        ),
                       ),
                     )
                   },

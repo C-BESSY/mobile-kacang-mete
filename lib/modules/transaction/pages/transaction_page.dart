@@ -9,14 +9,15 @@ import 'package:kacang_mete/modules/transaction/widgets/transaction_weekly_widge
 import 'package:kacang_mete/modules/transaction/widgets/transaction_yearly_widget.dart';
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  final DateTime? paramDate;
+  const TransactionPage({super.key, this.paramDate});
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  late DateTime _selectedDate = DateTime.now();
+  late DateTime _selectedDate = widget.paramDate ?? DateTime.now();
   late TransactionFilterEnum dropdownValue = TransactionFilterEnum.harian;
 
   @override
