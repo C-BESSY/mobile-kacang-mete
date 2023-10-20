@@ -69,11 +69,14 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                 ),
                 const Align(),
-                TransactionFilter(
-                    filterMode: dropdownValue,
-                    selectedDate: _selectedDate,
-                    onFilterClicked: (date) =>
-                        setState(() => _selectedDate = date)),
+                Visibility(
+                  visible: dropdownValue != TransactionFilterEnum.tahunan,
+                  child: TransactionFilter(
+                      filterMode: dropdownValue,
+                      selectedDate: _selectedDate,
+                      onFilterClicked: (date) =>
+                          setState(() => _selectedDate = date)),
+                ),
               ],
             ),
           ),
@@ -90,8 +93,7 @@ class _TransactionPageState extends State<TransactionPage> {
               selectedYear: 2023,
             ),
           if (dropdownValue == TransactionFilterEnum.tahunan)
-            const TransactionYearlyWidget(
-            ),
+            const TransactionYearlyWidget(),
         ],
       ),
     );
