@@ -9,8 +9,8 @@ class IncomeExpenseType {
 
   factory IncomeExpenseType.fromDB(Map<String, dynamic> data) {
     return IncomeExpenseType(
-      sumIncome: data['total_pembelian'],
-      sumExpense: data['total_penjualan'],
+      sumIncome: data['total_penjualan'],
+      sumExpense: data['total_pembelian'],
     );
   }
 }
