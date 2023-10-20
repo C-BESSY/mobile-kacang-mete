@@ -74,8 +74,10 @@ class _TransactionPageState extends State<TransactionPage> {
                   child: TransactionFilter(
                       filterMode: dropdownValue,
                       selectedDate: _selectedDate,
-                      onFilterClicked: (date) =>
-                          setState(() => _selectedDate = date)),
+                      onFilterClicked: (date) {
+                        setState(() => _selectedDate = date);
+                        setState(() {});
+                      }),
                 ),
               ],
             ),
@@ -89,8 +91,8 @@ class _TransactionPageState extends State<TransactionPage> {
               selectedDate: _selectedDate,
             ),
           if (dropdownValue == TransactionFilterEnum.bulanan)
-            const TransactionMonthlyWidget(
-              selectedYear: 2023,
+            TransactionMonthlyWidget(
+              selectedYear: _selectedDate.year,
             ),
           if (dropdownValue == TransactionFilterEnum.tahunan)
             const TransactionYearlyWidget(),

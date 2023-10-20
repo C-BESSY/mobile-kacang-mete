@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     HomeRepository()
         .getOverview(_selectedDate)
         .then((value) => overviewData = value);
-    HomeRepository().getRecentTrasaction().then((value) {
+    HomeRepository().getRecentTrasaction(_selectedDate).then((value) {
       setState(() => recentTransaction = value);
     });
   }
@@ -51,8 +51,7 @@ class _HomePageState extends State<HomePage> {
                   padding:
                       EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                        20), // Adjust the radius as needed
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
@@ -68,6 +67,11 @@ class _HomePageState extends State<HomePage> {
                             .getOverview(date ?? _selectedDate)
                             .then((value) =>
                                 setState(() => overviewData = value));
+                        HomeRepository()
+                            .getRecentTrasaction(date ?? _selectedDate)
+                            .then((value) {
+                          setState(() => recentTransaction = value);
+                        });
                         setState(() {
                           _selectedDate = date ?? _selectedDate;
                         });
