@@ -32,7 +32,7 @@ class TransactionRepository {
     }
   }
 
-  Future<DateEdge> getTheEdgeOfMonth() async {
+  Future<DateEdge> getTheEdgeOfMonth(int year) async {
     try {
       final query = await db.runRawQuery('''
       SELECT min(strftime('%m', tgl)) as bln_awal, max(strftime('%m', tgl)) as bln_akhir
@@ -43,6 +43,7 @@ class TransactionRepository {
         SELECT id, tgl, stored_price, false
         FROM penjualan
       )
+       WHERE strftime('%Y', tgl) = '$year'
     ''');
       if (query.first['bln_awal'] == null || query.isEmpty) {
         throw "Data masih kosong";
@@ -77,6 +78,7 @@ class TransactionRepository {
   }
 
   Future<List<dynamic>> getDataDaily(DateTime date) async {
+    print(date.toString());
     try {
       final query = await db.runRawQuery('''
       SELECT *
@@ -158,7 +160,7 @@ class TransactionRepository {
     }
   }
 
-  Future<IncomeExpenseType> getMontlyIncomeExpense(int month) async {
+  Future<IncomeExpenseType> getMontlyIncomeExpense(int month, int year) async {
     try {
       final database = await db.runRawQuery('''
       SELECT 
@@ -171,7 +173,8 @@ class TransactionRepository {
         SELECT id, tgl, stored_price, false
         FROM penjualan
       )
-      where strftime('%m', tgl) = '$month' 
+      where strftime('%m', tgl) = '$month'
+       and strftime('%Y', tgl) = '$year'
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {
         throw "Data masih kosong";
