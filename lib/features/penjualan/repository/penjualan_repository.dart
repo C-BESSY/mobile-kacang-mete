@@ -27,8 +27,12 @@ class PenjualanRepository {
     required PenjualanType penjualan,
   }) async {
     try {
-      final insertId = await db.insert(tableName, row: penjualan.toMap());
+      final insertId = penjualan.id == 0
+          ? await db.insert(tableName, row: penjualan.toMap())
+          : await db.update(tableName, penjualan.id, row: penjualan.toMap());
       if (insertId == 0) throw "Data tidak terinsert";
+      showSuccessMessage(context,
+          "Sukses ${penjualan.id == 0 ? 'Menambah' : 'Mengubah'} Penjualan");
       return true;
     } catch (error) {
       print(error);

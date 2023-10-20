@@ -8,10 +8,12 @@ import 'package:kacang_mete/features/item/types/item_type.dart';
 class ItemPickerWidget extends StatefulWidget {
   final Function(ItemType, List<ItemVarianType>?) onSelected;
   final Function(String)? onChanged;
+  final ItemType? initalItem;
   const ItemPickerWidget({
     super.key,
     required this.onSelected,
     this.onChanged,
+    this.initalItem,
   });
 
   @override
@@ -19,7 +21,8 @@ class ItemPickerWidget extends StatefulWidget {
 }
 
 class _ItemPickerWidgetState extends State<ItemPickerWidget> {
-  final TextEditingController _selectedItem = TextEditingController();
+  late final TextEditingController _selectedItem =
+      TextEditingController(text: widget.initalItem?.name ?? "");
 
   Future<List<ItemType>> searchItem(String pattern) async {
     final items = await ItemRepository().getItems(context);

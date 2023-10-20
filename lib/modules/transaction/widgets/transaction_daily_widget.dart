@@ -52,7 +52,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     final dateEdge =
         await TransactionRepository().getTheEdgeOfDate(widget.selectedDate);
     for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
-      print(i);
       List<dynamic> dailyData = await TransactionRepository().getDataDaily(
           DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
       IncomeExpenseType overviewDaily = generateDailyData(dailyData);
@@ -105,6 +104,7 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
                   item: item.kategori.name,
                   ammount: item.harga,
                   date: item.date,
+                  primaryKey: item.id,
                 );
               } else if (item is PenjualanType) {
                 String itemName = "";
@@ -113,6 +113,7 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
                   item: "$itemName - ${item.varian.varian}",
                   ammount: item.storedPrice,
                   date: item.date,
+                  primaryKey: item.id,
                 );
               }
               return null;

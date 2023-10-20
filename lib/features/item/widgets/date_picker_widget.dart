@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final Function(DateTime) onSelected;
+  final DateTime? initialDate;
 
   const DatePickerWidget({
     super.key,
     required this.onSelected,
+    this.initialDate,
   });
 
   @override
@@ -19,7 +21,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
   Future<void> _showDatePicker(BuildContext context) async {
     final selectedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: widget.initialDate ?? _selectedDate,
       firstDate: DateTime.now().subtract(const Duration(days: 360)),
       lastDate: DateTime.now().add(const Duration(days: 360)),
     );
@@ -49,7 +51,8 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
             const Icon(Icons.calendar_today),
             const SizedBox(width: 10),
             Text(
-              DateFormat('dd MMMM yyyy').format(_selectedDate),
+              DateFormat('dd MMMM yyyy')
+                  .format(widget.initialDate ?? _selectedDate),
             ),
           ],
         ),

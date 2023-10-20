@@ -16,7 +16,8 @@ import 'dart:core';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 
 class PenjualanPage extends StatefulWidget {
-  const PenjualanPage({super.key});
+  final int? primaryKey;
+  const PenjualanPage({super.key, this.primaryKey});
 
   @override
   State<PenjualanPage> createState() => _PenjualanPageState();
@@ -25,10 +26,9 @@ class PenjualanPage extends StatefulWidget {
 class _PenjualanPageState extends State<PenjualanPage> {
   final _formKey = GlobalKey<FormState>();
   ItemType? _selectedItem;
-  ItemVarianType? _selectedJenis;
-  List<ItemVarianType> _availableItemJenis = [];
+  ItemVarianType? _selectedVarian;
+  List<ItemVarianType> _availableItemVarian = [];
   String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
   final TextEditingController _quantity = TextEditingController(text: "");
   late final List<InputType> inputList = [
     InputType("item", TextInputType.text, _quantity),
@@ -37,24 +37,40 @@ class _PenjualanPageState extends State<PenjualanPage> {
     InputType("Jumlah", TextInputType.number, _quantity),
   ];
 
-  String get theTotal => _selectedJenis == null
+  String get theTotal => _selectedVarian == null
       ? intToIDR(0)
       : intToIDR(int.parse(_quantity.text == "" ? "0" : _quantity.text) *
-          _selectedJenis!.harga);
+          _selectedVarian!.harga);
 
   void save() async {
     if (_formKey.currentState!.validate()) {
       final PenjualanType theData = PenjualanType(
-        id: 0,
+        id: widget.primaryKey ?? 0,
         quantity: int.parse(_quantity.text),
         storedPrice: int.parse(_quantity.text == "" ? "0" : _quantity.text) *
-            _selectedJenis!.harga,
-        varian: _selectedJenis!,
+            _selectedVarian!.harga,
+        varian: _selectedVarian!,
         date: selectedDate,
       );
       await PenjualanRepository().insertPenjualan(context, penjualan: theData);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const BasePage()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.primaryKey != null) {
+      PenjualanRepository()
+          .getPenjualan(id: widget.primaryKey!)
+          .then((data) async {
+        final item = await data!.varian.getItem();
+        setState(() {
+          selectedDate = data!.date;
+          _quantity.text = data.quantity.toString();
+          _selectedVarian = data.varian;
+          _selectedItem = item;
+        });
+      });
     }
   }
 
@@ -137,26 +153,49 @@ class _PenjualanPageState extends State<PenjualanPage> {
                           final inputData = inputList[index];
                           switch (inputData.label) {
                             case "item":
-                              return ItemPickerWidget(
-                                onSelected: (item, jenis) => setState(() {
-                                  _selectedItem = item;
-                                  _availableItemJenis = jenis!;
-                                }),
-                              );
+                              if (widget.primaryKey != null) {
+                                return ItemPickerWidget(
+                                  initalItem: _selectedItem!,
+                                  onSelected: (item, jenis) => setState(() {
+                                    _selectedItem = item;
+                                    _availableItemVarian = jenis!;
+                                  }),
+                                );
+                              } else {
+                                return ItemPickerWidget(
+                                  onSelected: (item, jenis) => setState(() {
+                                    _selectedItem = item;
+                                    _availableItemVarian = jenis!;
+                                  }),
+                                );
+                              }
+
                             case "jenis":
-                              return ItemJenisPickerWidget(
-                                onSelected: (item) =>
-                                    setState(() => _selectedJenis = item),
-                                items: _availableItemJenis,
-                              );
+                              if (widget.primaryKey != null) {
+                                return ItemJenisPickerWidget(
+                                  initalVarian: _selectedVarian!,
+                                  onSelected: (item) =>
+                                      setState(() => _selectedVarian = item),
+                                  items: _availableItemVarian,
+                                );
+                              } else {
+                                return ItemJenisPickerWidget(
+                                  onSelected: (item) =>
+                                      setState(() => _selectedVarian = item),
+                                  items: _availableItemVarian,
+                                );
+                              }
                             case "waktu":
                               return DatePickerWidget(
-                                onSelected: (DateTime date) => setState(() =>
-                                    selectedDate =
-                                        DateFormat('yyyy-MM-dd').format(date)),
+                                initialDate: DateFormat('yyyy-MM-dd')
+                                    .parse(selectedDate),
+                                onSelected: (DateTime date) => setState(
+                                  () => selectedDate =
+                                      DateFormat('yyyy-MM-dd').format(date),
+                                ),
                               );
                             default:
-                              if (_selectedJenis != null) {
+                              if (_selectedVarian != null) {
                                 return TextFormField(
                                   controller: inputData.textController,
                                   keyboardType: inputData.inputType,

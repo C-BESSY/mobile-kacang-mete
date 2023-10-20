@@ -5,11 +5,13 @@ import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 
 class ItemJenisPickerWidget extends StatefulWidget {
   final Function(ItemVarianType) onSelected;
-  final List<ItemVarianType> items; 
+  final List<ItemVarianType> items;
+  final ItemVarianType? initalVarian;
   const ItemJenisPickerWidget({
     super.key,
     required this.onSelected,
     required this.items,
+    this.initalVarian,
   });
 
   @override
@@ -17,12 +19,19 @@ class ItemJenisPickerWidget extends StatefulWidget {
 }
 
 class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
-  final TextEditingController _selectedItem = TextEditingController();
+  late final TextEditingController _selectedItem =
+      TextEditingController(text: widget.initalVarian?.varian ?? "");
   List<ItemVarianType> searchItem(String pattern) {
     return widget.items
         .where(
             (item) => item.varian.toLowerCase().contains(pattern.toLowerCase()))
         .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.initalVarian?.varian ?? "g da");
   }
 
   @override

@@ -148,6 +148,7 @@ class _HomePageState extends State<HomePage> {
                   item: item.kategori.name,
                   ammount: item.harga,
                   date: item.date,
+                  primaryKey: item.id,
                 );
               } else if (item is PenjualanType) {
                 String itemName = "";
@@ -157,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                   item: "$itemName - ${item.varian.varian}",
                   ammount: item.storedPrice,
                   date: item.date,
+                  primaryKey: item.id,
                 );
               }
               return null;
