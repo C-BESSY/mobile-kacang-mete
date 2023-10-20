@@ -2,6 +2,7 @@
 
 import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
 import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
 import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
@@ -20,7 +21,7 @@ class TransactionRepository {
           SELECT id, tgl, false
           FROM penjualan
           )
-        WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${date.month}';
+        WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${addZeroDigit(date.month)}';
         ''');
       if (query.first['tgl_awal'] == null || query.isEmpty) {
         throw "Data masih kosong!";
@@ -78,7 +79,6 @@ class TransactionRepository {
   }
 
   Future<List<dynamic>> getDataDaily(DateTime date) async {
-    print(date.toString());
     try {
       final query = await db.runRawQuery('''
       SELECT *
@@ -90,48 +90,14 @@ class TransactionRepository {
         FROM penjualan
       )
       WHERE strftime('%Y', tgl) = '${date.year}' 
-      AND strftime('%m', tgl) = '${date.month}' 
-      AND strftime('%d', tgl) = '${date.day}';
+      AND strftime('%m', tgl) = '${addZeroDigit(date.month)}' 
+      AND strftime('%d', tgl) = '${addZeroDigit(date.day)}';
     ''');
       return await transactionMapping(query);
     } catch (error) {
       print(error);
       return [];
     }
-  }
-
-  Future<int> getDailySumIncome(DateTime selectedDate) async {
-    final database = await db.runRawQuery('''
-    SELECT SUM(stored_price) as total_penjualan
-    FROM penjualan
-    WHERE strftime('%Y', tgl) = '${selectedDate.year}' 
-    AND strftime('%m', tgl) = '${selectedDate.month}' 
-    AND strftime('%d', tgl) = '${selectedDate.day}';
-    ''');
-    if (database.isEmpty) {
-      return 0;
-    }
-    if (database.first['total_penjualan'] == null) {
-      return 0;
-    }
-    return database.first['total_penjualan'] as int;
-  }
-
-  Future<int> getDailySumExpense(DateTime selectedDate) async {
-    final database = await db.runRawQuery('''
-      SELECT SUM(harga) as total_pembelian
-      FROM pembelian
-      WHERE strftime('%Y', tgl) = '${selectedDate.year}' 
-      AND strftime('%m', tgl) = '${selectedDate.month}' 
-      AND strftime('%d', tgl) = '${selectedDate.day}';
-    ''');
-    if (database.isEmpty) {
-      return 0;
-    }
-    if (database.first['total_pembelian'] == null) {
-      return 0;
-    }
-    return database.first['total_pembelian'] as int;
   }
 
   Future<IncomeExpenseType> getWeeklyIncomeExpense(
@@ -173,7 +139,7 @@ class TransactionRepository {
         SELECT id, tgl, stored_price, false
         FROM penjualan
       )
-      where strftime('%m', tgl) = '$month'
+      where strftime('%m', tgl) = '${addZeroDigit(month)}'
        and strftime('%Y', tgl) = '$year'
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {

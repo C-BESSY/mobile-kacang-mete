@@ -61,3 +61,7 @@ String getMonthName(int month) {
   ];
   return months[month - 1];
 }
+
+String addZeroDigit(int number) {
+  return number < 10 ? '0$number' : number.toString();
+}
