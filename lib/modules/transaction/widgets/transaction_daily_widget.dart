@@ -18,14 +18,9 @@ class TransactionDailyWidget extends StatefulWidget {
 }
 
 class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
-  OverviewData overviewData =
-      OverviewData(pembelian: 0, penjualan: 0, balance: 0);
   @override
   void initState() {
     super.initState();
-    HomeRepository()
-        .getOverview(widget.selectedDate)
-        .then((value) => setState(() => overviewData = value));
   }
 
   IncomeExpenseType generateDailyData(List<dynamic> datas) {
@@ -39,6 +34,15 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
       }
     }
     return IncomeExpenseType(sumIncome: sumIncome, sumExpense: sumExpense);
+  }
+
+  Future<Widget> get cardOverview async {
+    final OverviewData overviewData =
+        await HomeRepository().getOverview(widget.selectedDate);
+    return CardOverviewWidget(
+      overviewData: overviewData,
+      description: dateTimeToMonth(widget.selectedDate),
+    );
   }
 
   Future<List<Widget>> get rows async {
@@ -125,9 +129,18 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        CardOverviewWidget(
-            overviewData: overviewData,
-            description: dateTimeToMonth(widget.selectedDate)),
+        FutureBuilder<Widget>(
+          future: cardOverview,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return snapshot.data ?? const SizedBox();
+            }
+          },
+        ),
         Padding(
           padding: EdgeInsets.only(bottom: screenHeight * 0.15),
           child: FutureBuilder<List<Widget>>(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kacang_mete/common/enums/transaction_type_enum.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
-import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
 import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
 import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
@@ -17,22 +15,27 @@ class TransactionMonthlyWidget extends StatefulWidget {
 }
 
 class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
-  DateEdge dateEdge = DateEdge(theStart: 0, theEnd: 0);
-
   @override
   void initState() {
     super.initState();
-    TransactionRepository()
-        .getTheEdgeOfMonth(widget.selectedYear)
-        .then((value) => setState(() {
-              dateEdge = value;
-              debugPrint("${value.theStart} ${value.theEnd}");
-            }));
+  }
+
+  Future<Widget> get cardOverview async {
+    final IncomeExpenseType incomeExpense = await TransactionRepository()
+        .getYearlyIncomeExpense(widget.selectedYear);
+    return CardOverviewWidget(
+      overviewData: OverviewData(
+          pembelian: incomeExpense.sumExpense,
+          penjualan: incomeExpense.sumIncome,
+          balance: incomeExpense.sumIncome - incomeExpense.sumExpense),
+      description: "Tahun ${widget.selectedYear}",
+    );
   }
 
   Future<List<Widget>> get rows async {
     List<Widget> data = [];
-    final screenHeight = MediaQuery.of(context).size.height;
+    DateEdge dateEdge =
+        await TransactionRepository().getTheEdgeOfMonth(widget.selectedYear);
     final screenWidth = MediaQuery.of(context).size.width;
     for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
       IncomeExpenseType monthlyData = await TransactionRepository()
@@ -54,14 +57,14 @@ class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
                 children: [
                   Text(
                     intToIDR(monthlyData.sumIncome),
-                    style: TextStyle(color: Colors.green),
+                    style: const TextStyle(color: Colors.green),
                   ),
                   SizedBox(
                     width: screenWidth * 0.025,
                   ),
                   Text(
                     intToIDR(monthlyData.sumExpense),
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ],
               )
@@ -75,21 +78,31 @@ class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        // CardOverviewWidget(title: "2023", description: "Monthly Transaction "),
+        FutureBuilder<Widget>(
+          future: cardOverview,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return snapshot.data ?? const SizedBox();
+            }
+          },
+        ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
           child: FutureBuilder<List<Widget>>(
             future: rows,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator(); // Show a loading indicator while waiting.
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text(
-                    'Error: ${snapshot.error}'); // Show an error message if there's an error.
+                    'Error: ${snapshot.error}');
               } else {
                 return Wrap(
                   children: snapshot.data ?? <Widget>[],
