@@ -53,4 +53,14 @@ class PembelianRepository {
       return false;
     }
   }
+
+  Future<bool> deletePembelian(context, {required int id}) async {
+    try {
+      if (!await db.delete(tableName, id)) throw "Tidak bisa dihapus";
+      showSuccessMessage(context, "Sukses Menghapus Pembelian");
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

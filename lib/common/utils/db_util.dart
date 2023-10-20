@@ -92,8 +92,11 @@ class DBUtil {
         .update(tableName, row, where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> delete(String tableName, int id) async {
+  Future<bool> delete(String tableName, int id) async {
     Database database = await db;
-    return await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
+    final query =
+        await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
+    if (query == 0) return false;
+    return true;
   }
 }
