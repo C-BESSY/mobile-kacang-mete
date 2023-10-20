@@ -5,8 +5,9 @@ import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
+import 'package:kacang_mete/modules/home/repository/home_repository.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
-import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
+import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
 class TransactionDailyWidget extends StatefulWidget {
   final DateTime selectedDate;
@@ -17,51 +18,40 @@ class TransactionDailyWidget extends StatefulWidget {
 }
 
 class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
-  DateEdge dateEdge = DateEdge(theStart: 0, theEnd: 0);
-
-  int sumIncome = 0;
-  int sumExpense = 0;
-
+  OverviewData overviewData =
+      OverviewData(pembelian: 0, penjualan: 0, balance: 0);
   @override
   void initState() {
     super.initState();
-    TransactionRepository()
-        .getTheEdgeOfDate(widget.selectedDate)
-        .then((value) => setState(() {
-              dateEdge = value;
-              _getTotal();
-            }));
+    HomeRepository()
+        .getOverview(widget.selectedDate)
+        .then((value) => setState(() => overviewData = value));
   }
 
-  void _getTotal() async {
-    for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
-      int dailyIncome = await TransactionRepository().getDailySumIncome(
-          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyExpense = await TransactionRepository().getDailySumExpense(
-          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-
-      setState(() {
-        sumIncome += dailyIncome;
-        sumExpense += dailyExpense;
-      });
+  IncomeExpenseType generateDailyData(List<dynamic> datas) {
+    int sumIncome = 0;
+    int sumExpense = 0;
+    for (var data in datas) {
+      if (data is PembelianType) {
+        sumExpense += data.harga;
+      } else if (data is PenjualanType) {
+        sumIncome += data.storedPrice;
+      }
     }
+    return IncomeExpenseType(sumIncome: sumIncome, sumExpense: sumExpense);
   }
 
   Future<List<Widget>> get rows async {
     List<Widget> data = [];
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    DateTime selectedDate = widget.selectedDate;
-    int sumIncome = 0;
-    int sumExpense = 0;
-
+    final dateEdge =
+        await TransactionRepository().getTheEdgeOfDate(widget.selectedDate);
     for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
+      print(i);
       List<dynamic> dailyData = await TransactionRepository().getDataDaily(
           DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyIncome = await TransactionRepository().getDailySumIncome(
-          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyExpense = await TransactionRepository().getDailySumExpense(
-          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      IncomeExpenseType overviewDaily = generateDailyData(dailyData);
       data.add(Column(
         children: [
           Padding(
@@ -82,14 +72,14 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
                 Row(
                   children: [
                     Text(
-                      intToIDR(dailyIncome),
-                      style: TextStyle(color: Colors.green),
+                      intToIDR(overviewDaily.sumIncome),
+                      style: const TextStyle(color: Colors.green),
                     ),
                     SizedBox(
                       width: screenWidth * 0.025,
                     ),
                     Text(
-                      intToIDR(dailyExpense),
+                      intToIDR(overviewDaily.sumExpense),
                       style: const TextStyle(color: Colors.red),
                     ),
                   ],
@@ -106,7 +96,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
             itemBuilder: (context, index) {
               final item = dailyData[index];
               if (item is PembelianType) {
-                dailyExpense += item.harga;
                 return TransactionItemWidget(
                   type: TransactionType.pembelian,
                   item: item.kategori.name,
@@ -114,7 +103,6 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
                   date: item.date,
                 );
               } else if (item is PenjualanType) {
-                dailyIncome += item.storedPrice;
                 String itemName = "";
                 return TransactionItemWidget(
                   type: TransactionType.penjualan,
@@ -139,11 +127,7 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     return Column(
       children: [
         CardOverviewWidget(
-            overviewData: OverviewData(
-              pembelian: sumExpense,
-              penjualan: sumIncome,
-              balance: sumIncome - sumExpense,
-            ),
+            overviewData: overviewData,
             description: dateTimeToMonth(widget.selectedDate)),
         Padding(
           padding: EdgeInsets.only(bottom: screenHeight * 0.15),
@@ -151,10 +135,9 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
             future: rows,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator(); // Show a loading indicator while waiting.
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
-                return Text(
-                    'Error: ${snapshot.error}'); // Show an error message if there's an error.
+                return Text('Error: ${snapshot.error}');
               } else {
                 return Wrap(
                   children: snapshot.data ?? <Widget>[],
