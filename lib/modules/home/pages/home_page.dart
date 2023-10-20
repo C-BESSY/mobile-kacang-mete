@@ -4,6 +4,7 @@ import 'package:kacang_mete/common/page/base_page.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
+import 'package:kacang_mete/features/item/types/item_type.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 import 'package:kacang_mete/modules/home/repository/home_repository.dart';
@@ -151,14 +152,24 @@ class _HomePageState extends State<HomePage> {
                   primaryKey: item.id,
                 );
               } else if (item is PenjualanType) {
-                String itemName = "";
-                item.varian.getItem().then((value) => itemName = value.name);
-                return TransactionItemWidget(
-                  type: TransactionType.penjualan,
-                  item: "$itemName - ${item.varian.varian}",
-                  ammount: item.storedPrice,
-                  date: item.date,
-                  primaryKey: item.id,
+                return FutureBuilder<ItemType>(
+                  future: item.varian.getItem(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      String itemName = snapshot.data!.name;
+                      return TransactionItemWidget(
+                        type: TransactionType.penjualan,
+                        item: "$itemName - ${item.varian.varian}",
+                        ammount: item.storedPrice,
+                        date: item.date,
+                        primaryKey: item.id,
+                      );
+                    }
+                  },
                 );
               }
               return null;
