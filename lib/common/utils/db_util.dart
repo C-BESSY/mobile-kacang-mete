@@ -1,4 +1,5 @@
 import 'dart:io' as io;
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:kacang_mete/common/constants/query_init_db.dart';
@@ -43,13 +44,12 @@ class DBUtil {
     final query = await database.rawQuery('''
       SELECT SUM(${isPembelian ? 'p.harga' : 'p.stored_price'}) as total
       FROM ${isPembelian ? 'pembelian' : 'penjualan'} p
-      WHERE strftime('%Y', p.tgl) = '${date.year}' AND strftime('%m', p.tgl) = '${date.month}';
+      WHERE strftime('%Y', p.tgl) = '${date.year}' AND strftime('%m', p.tgl) = '${addZeroDigit(date.month)}';
 ''');
     if (query.first['total'] == null || query.isEmpty) return 0;
     return query.first['total'] as int;
   }
 
- 
   Future<List<Map<String, dynamic>>> getTableData(String tableName) async {
     Database database = await db;
     return await database.query(tableName);

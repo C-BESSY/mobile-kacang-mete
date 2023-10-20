@@ -1,4 +1,5 @@
 import 'package:kacang_mete/common/utils/db_util.dart';
+import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
 import 'package:kacang_mete/common/widget/card_overview_widget.dart';
 
@@ -14,7 +15,30 @@ class HomeRepository {
         balance: penjualan - pembelian);
   }
 
-  Future<List<dynamic>> getRecentTrasaction() async {
+  Future<List<dynamic>> getRecentTrasaction(DateTime date) async {
+    try {
+      final rawData = await db.runRawQuery('''
+      SELECT *
+        FROM (
+          SELECT id, tgl, true as is_pembelian
+          FROM pembelian
+          UNION ALL
+          SELECT id, tgl, false
+          FROM penjualan
+        )
+        WHERE strftime('%Y', tgl) = '${date.year}' 
+        AND strftime('%m', tgl) = '${addZeroDigit(date.month)}' 
+        order by tgl desc
+        limit 10;
+        ''');
+      return await transactionMapping(rawData);
+    } catch (error) {
+      print("Error : $error");
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> getAllRecentTrasaction() async {
     try {
       final rawData = await db.runRawQuery('''
       SELECT *

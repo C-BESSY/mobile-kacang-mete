@@ -176,4 +176,28 @@ class TransactionRepository {
       return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
+
+  Future<IncomeExpenseType> getAllIncomeExpense() async {
+    try {
+      final database = await db.runRawQuery('''
+      SELECT 
+       SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
+       SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
+      FROM (
+        SELECT id, tgl, harga, true as is_pembelian
+        FROM pembelian
+        UNION ALL
+        SELECT id, tgl, stored_price, false
+        FROM penjualan
+      )
+    ''');
+      if (database.first['total_pembelian'] == null || database.isEmpty) {
+        throw "Data masih kosong";
+      }
+      return IncomeExpenseType.fromDB(database.first);
+    } catch (error) {
+      print(error);
+      return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
+    }
+  }
 }
