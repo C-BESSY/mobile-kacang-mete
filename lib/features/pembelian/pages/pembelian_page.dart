@@ -12,7 +12,8 @@ import 'package:kacang_mete/features/item/widgets/kategory_picker_widget.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 
 class PembelianPage extends StatefulWidget {
-  const PembelianPage({super.key});
+  final int? primaryKey;
+  const PembelianPage({super.key, this.primaryKey});
 
   @override
   State<PembelianPage> createState() => _PembelianPageState();
@@ -37,15 +38,30 @@ class _PembelianPageState extends State<PembelianPage> {
   void save() async {
     if (_formKey.currentState!.validate()) {
       final PembelianType theData = PembelianType(
-        id: 0,
+        id: widget.primaryKey ?? 0,
         harga: int.parse(_harga.text),
         keterangan: _keterangan.text,
-        date: selectedDate!,
+        date: selectedDate,
         kategori: newKategori != null
             ? KategoriType(id: 0, name: newKategori!)
             : _selectedKategori!,
       );
       await PembelianRepository().insertPembelian(context, pembelian: theData);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.primaryKey != null) {
+      PembelianRepository().getPembelian(id: widget.primaryKey!).then((data) {
+        setState(() {
+          selectedDate = data!.date;
+          _keterangan.text = data.keterangan;
+          _harga.text = data.harga.toString();
+          _selectedKategori = data.kategori;
+        });
+      });
     }
   }
 
@@ -132,6 +148,9 @@ class _PembelianPageState extends State<PembelianPage> {
                             case "Kategori":
                               return Column(children: [
                                 KategoryPickerWidget(
+                                  initialKategori: widget.primaryKey != null
+                                      ? _selectedKategori!
+                                      : null,
                                   onSelected: (kategori) => setState(() {
                                     _selectedKategori = kategori;
                                   }),
@@ -155,6 +174,8 @@ class _PembelianPageState extends State<PembelianPage> {
                               ]);
                             case "waktu":
                               return DatePickerWidget(
+                                initialDate: DateFormat('yyyy-MM-dd')
+                                    .parse(selectedDate),
                                 onSelected: (DateTime date) => setState(() =>
                                     selectedDate =
                                         DateFormat('yyyy-MM-dd').format(date)),

@@ -6,14 +6,20 @@ import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 
 class KategoryPickerWidget extends StatefulWidget {
   final Function(KategoriType) onSelected;
-  const KategoryPickerWidget({super.key, required this.onSelected});
+  final KategoriType? initialKategori;
+  const KategoryPickerWidget({
+    super.key,
+    required this.onSelected,
+    this.initialKategori,
+  });
 
   @override
   State<KategoryPickerWidget> createState() => _KategoryPickerWidgetState();
 }
 
 class _KategoryPickerWidgetState extends State<KategoryPickerWidget> {
-  final TextEditingController _selectedItem = TextEditingController();
+  late final TextEditingController _selectedItem =
+      TextEditingController(text: widget.initialKategori?.name ?? "");
 
   Future<List<KategoriType>> searchItem(String pattern) async {
     final items = await KategoriRepository().getKategoris()

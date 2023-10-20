@@ -34,11 +34,18 @@ class PembelianRepository {
           ? await KategoriRepository()
               .insertKategori(kategori: pembelian.kategori)
           : kategori.id;
-      final insertId = await db.insert(tableName,
-          row: pembelian.toMap()
-            ..addAll({'kategori_id': kategoriId})
-            ..remove('kategori'));
+      final insertId = pembelian.id == 0
+          ? await db.insert(tableName,
+              row: pembelian.toMap()
+                ..addAll({'kategori_id': kategoriId})
+                ..remove('kategori'))
+          : await db.update(tableName, pembelian.id,
+              row: pembelian.toMap()
+                ..addAll({'kategori_id': kategoriId})
+                ..remove('kategori'));
       if (insertId == 0) throw "Data tidak terinsert";
+      showSuccessMessage(context,
+          "Sukses ${pembelian.id == 0 ? 'Menambah' : 'Mengubah'} Pembelian");
       return true;
     } catch (error) {
       print(error);

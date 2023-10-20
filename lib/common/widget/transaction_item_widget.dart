@@ -31,8 +31,14 @@ class TransactionItemWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           if (type == TransactionType.pembelian) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PembelianPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PembelianPage(
+                  primaryKey: primaryKey,
+                ),
+              ),
+            );
           } else {
             Navigator.push(
               context,
