@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
-import 'package:kacang_mete/modules/transaction/types/weekly_income_expense_type.dart';
+import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
 class TransactionWeeklyWidget extends StatefulWidget {
   final DateTime selectedDate;
@@ -55,7 +55,7 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
           final dateRange =
               "${startDate.day} ${_getMonthName(startDate.month)} - ${endDate.day} ${_getMonthName(endDate.month)}";
 
-          return FutureBuilder<WeeklyIncomeExpenseType>(
+          return FutureBuilder<IncomeExpenseType>(
             future: transactionRepository.getWeeklyIncomeExpense(startDate, endDate), builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
