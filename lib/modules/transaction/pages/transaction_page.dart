@@ -4,7 +4,9 @@ import 'package:kacang_mete/common/enums/transaction_filter_enum.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_daily_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_filter.dart';
+import 'package:kacang_mete/modules/transaction/widgets/transaction_monthly_widget.dart';
 import 'package:kacang_mete/modules/transaction/widgets/transaction_weekly_widget.dart';
+import 'package:kacang_mete/modules/transaction/widgets/transaction_yearly_widget.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -82,6 +84,13 @@ class _TransactionPageState extends State<TransactionPage> {
           if (dropdownValue == TransactionFilterEnum.mingguan)
             TransactionWeeklyWidget(
               selectedDate: _selectedDate,
+            ),
+          if (dropdownValue == TransactionFilterEnum.bulanan)
+            const TransactionMonthlyWidget(
+              selectedYear: 2023,
+            ),
+          if (dropdownValue == TransactionFilterEnum.tahunan)
+            const TransactionYearlyWidget(
             ),
         ],
       ),
