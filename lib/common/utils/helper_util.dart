@@ -43,3 +43,21 @@ String formatDate(String inputDate) {
 String dateTimeToMonth(DateTime date) {
   return DateFormat('MMMM yyyy').format(date);
 }
+
+String getMonthName(int month) {
+  final months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  return months[month - 1];
+}
