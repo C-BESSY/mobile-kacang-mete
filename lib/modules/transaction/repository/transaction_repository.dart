@@ -1,12 +1,13 @@
 import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
+import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
 import 'package:kacang_mete/modules/transaction/types/weekly_income_expense_type.dart';
 
 class TransactionRepository {
   DBUtil db = DBUtil();
 
-  Future<Map<String, int>> getTheEdgeOfDate(DateTime date) async {
+  Future<DateEdge> getTheEdgeOfDate(DateTime date) async {
     final query = await db.runRawQuery('''
      SELECT min(strftime('%d', tgl)) as tgl_awal, max(strftime('%d', tgl)) as tgl_akhir
       FROM (
@@ -19,12 +20,9 @@ class TransactionRepository {
       WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${date.month}';
 ''');
     if (query.first['tgl_awal'] == null || query.isEmpty) {
-      return {'firstDate': 0, 'lastDate': 0};
+      return DateEdge.forDaily({'tgl_awal': 0, 'tgl_akhir': 0});
     }
-    return {
-      'firstDate': int.parse(query.first['tgl_awal']),
-      'lastDate': int.parse(query.first['tgl_akhir'])
-    };
+    return DateEdge.forDaily(query.first);
   }
 
   Future<List<dynamic>> getDataDaily(DateTime date) async {

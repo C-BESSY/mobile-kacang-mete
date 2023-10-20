@@ -6,6 +6,7 @@ import 'package:kacang_mete/common/widget/transaction_item_widget.dart';
 import 'package:kacang_mete/features/pembelian/types/pembelian_type.dart';
 import 'package:kacang_mete/features/penjualan/types/penjualan_type.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
+import 'package:kacang_mete/modules/transaction/types/date_edge.dart';
 
 class TransactionDailyWidget extends StatefulWidget {
   final DateTime selectedDate;
@@ -16,27 +17,28 @@ class TransactionDailyWidget extends StatefulWidget {
 }
 
 class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
-  int firstDate = 0;
-  int lastDate = 0;
+  DateEdge dateEdge = DateEdge(theStart: 0, theEnd: 0);
+
   int sumIncome = 0;
   int sumExpense = 0;
-  
+
   @override
   void initState() {
     super.initState();
     TransactionRepository()
         .getTheEdgeOfDate(widget.selectedDate)
         .then((value) => setState(() {
-              firstDate = value['firstDate']!;
-              lastDate = value['lastDate']!;
+              dateEdge = value;
               _getTotal();
             }));
   }
 
   void _getTotal() async {
-    for (int i = firstDate; (i != 0 && i <= lastDate); i++) {
-      int dailyIncome = await TransactionRepository().getDailySumIncome(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyExpense = await TransactionRepository().getDailySumExpense(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+    for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
+      int dailyIncome = await TransactionRepository().getDailySumIncome(
+          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      int dailyExpense = await TransactionRepository().getDailySumExpense(
+          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
 
       setState(() {
         sumIncome += dailyIncome;
@@ -53,11 +55,13 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     int sumIncome = 0;
     int sumExpense = 0;
 
-    for (int i = firstDate; (i != 0 && i <= lastDate); i++) {
+    for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
       List<dynamic> dailyData = await TransactionRepository().getDataDaily(
           DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyIncome = await TransactionRepository().getDailySumIncome(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      int dailyExpense = await TransactionRepository().getDailySumExpense(DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      int dailyIncome = await TransactionRepository().getDailySumIncome(
+          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+      int dailyExpense = await TransactionRepository().getDailySumExpense(
+          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
       data.add(Column(
         children: [
           Padding(
