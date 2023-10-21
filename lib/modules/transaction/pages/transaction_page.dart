@@ -78,11 +78,9 @@ class _TransactionPageState extends State<TransactionPage> {
                     selectedDate: _selectedDate,
                     onFilterClicked: (date) {
                       setState(() => _selectedDate = date);
-                      setState(() {});
                     },
                     onSortBySelected: (val) {
                       setState(() => isNewest = val);
-                      setState(() {});
                     },
                     isNewest: isNewest,
                   ),
