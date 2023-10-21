@@ -79,6 +79,7 @@ class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
         FutureBuilder<Widget>(
@@ -94,15 +95,15 @@ class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
           },
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.025, vertical: screenHeight * 0.025),
           child: FutureBuilder<List<Widget>>(
             future: rows,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
-                return Text(
-                    'Error: ${snapshot.error}');
+                return Text('Error: ${snapshot.error}');
               } else {
                 return Wrap(
                   children: snapshot.data ?? <Widget>[],
