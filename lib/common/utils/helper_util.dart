@@ -65,3 +65,11 @@ String getMonthName(int month) {
 String addZeroDigit(int number) {
   return number < 10 ? '0$number' : number.toString();
 }
+
+String truncateString(String input, {int maxLength = 13}) {
+  if (input.length > maxLength) {
+    return '${input.substring(0, maxLength - 3)}...';
+  } else {
+    return input;
+  }
+}

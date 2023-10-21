@@ -25,6 +25,7 @@ class CardOverviewWidget extends StatelessWidget {
         ),
         Text(
           intToIDR(overviewData.balance),
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: screenHeight * 0.05,
@@ -69,84 +70,82 @@ class _ExpandableCardWidget extends StatefulWidget {
   @override
   _ExpandableCardWidgetState createState() => _ExpandableCardWidgetState();
 }
+
 class _ExpandableCardWidgetState extends State<_ExpandableCardWidget> {
   bool isExpanded = false;
 
-@override
+  void _tappedCard() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: widget.mainColor,
+          content: Row(
+            children: [
+              Image.asset(widget.iconPath),
+              SizedBox(
+                width: screenWidth * 0.025,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenHeight * 0.018,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    widget.value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenHeight * 0.015,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isExpanded = !isExpanded;
-        });
-      },
-      child: Card(
-        elevation: isExpanded ? 4 : 0,
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.025),
-              child: Container(
-                width: screenWidth * 0.4,
-                padding: EdgeInsets.all(screenWidth * 0.025),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: widget.mainColor,
-                    width: 2.0,
-                  ),
+      onTap: _tappedCard,
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.025),
+            child: Container(
+              width: screenWidth * 0.4,
+              padding: EdgeInsets.all(screenWidth * 0.025),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
                   color: widget.mainColor,
+                  width: 2.0,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(widget.iconPath),
-                    SizedBox(
-                      width: screenWidth * 0.025,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenHeight * 0.018,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          widget.value,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenHeight * 0.015,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                color: widget.mainColor,
               ),
-            ),
-            Visibility(
-              visible: isExpanded,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.025),
-                child: Container(
-                  width: screenWidth * 0.4,
-                  padding: EdgeInsets.all(screenWidth * 0.025),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: widget.mainColor,
-                      width: 2.0,
-                    ),
-                    color: widget.mainColor,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(widget.iconPath),
+                  SizedBox(
+                    width: screenWidth * 0.025,
                   ),
-                  child: Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -158,7 +157,7 @@ class _ExpandableCardWidgetState extends State<_ExpandableCardWidget> {
                         ),
                       ),
                       Text(
-                        widget.value,
+                        truncateString(widget.value),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenHeight * 0.015,
@@ -167,11 +166,11 @@ class _ExpandableCardWidgetState extends State<_ExpandableCardWidget> {
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -188,3 +187,4 @@ class OverviewData {
     required this.balance,
   });
 }
+
