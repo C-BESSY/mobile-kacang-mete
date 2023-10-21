@@ -17,6 +17,10 @@ class MyApp extends StatelessWidget {
       create: (context) => TempFilterProvider(),
       child: MaterialApp(
         title: 'Flutter Demo',
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(accessibleNavigation: false),
+          child: child!,
+        ),
         theme: ThemeData(
           fontFamily: 'Inter',
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
