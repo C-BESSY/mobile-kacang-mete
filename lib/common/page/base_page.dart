@@ -22,10 +22,11 @@ class BasePage extends StatefulWidget {
 }
 
 class _BasePageState extends State<BasePage> {
-  late final _pageController;
-  late final _controller;
+  late final PageController _pageController;
+  late final NotchBottomBarController _controller;
   bool isCreateOpen = false;
   int get maxCount => item.length;
+  bool isHome = true;
   late final item = [
     const HomePage(),
     const HomePage(),
@@ -62,10 +63,16 @@ class _BasePageState extends State<BasePage> {
           Positioned.fill(
             child: Visibility(
               visible: isCreateOpen,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                child: Container(
-                  color: Colors.black.withOpacity(0.1),
+              child: GestureDetector(
+                onTap: () {
+                  _controller.jumpTo(isHome ? 0 : 2);
+                  setState(() => isCreateOpen = false);
+                },
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.1),
+                  ),
                 ),
               ),
             ),
@@ -123,6 +130,7 @@ class _BasePageState extends State<BasePage> {
               onTap: (index) {
                 setState(() => isCreateOpen = index == 1);
                 if (index != 1) {
+                  setState(() => isHome = index == 0);
                   _pageController.jumpToPage(index);
                 }
               },
