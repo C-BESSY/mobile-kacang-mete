@@ -1,11 +1,21 @@
 String queryInitDb = '''
-    CREATE TABLE item
+ $initQueryItem
+ $initQueryItemVarian
+ $initQueryKategori
+ $initQueryPenjualan
+ $initQueryPembelian 
+''';
+
+const String initQueryItem = '''
+ CREATE TABLE item
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(150) NOT NULL
     );
+''';
 
-    CREATE TABLE item_varian
+const String initQueryItemVarian = '''
+ CREATE TABLE item_varian
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       varian VARCHAR(150) NOT NULL,
@@ -13,14 +23,16 @@ String queryInitDb = '''
       item_id INT NOT NULL,
       FOREIGN KEY (item_id) REFERENCES item(id)
     );
-
-    CREATE TABLE kategori
+''';
+const String initQueryKategori = '''
+  CREATE TABLE kategori
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(150) NOT NULL
     );
-
-    CREATE TABLE pembelian
+''';
+const String initQueryPenjualan = '''
+ CREATE TABLE pembelian
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       harga BIGINT NOT NULL,
@@ -30,7 +42,10 @@ String queryInitDb = '''
       FOREIGN KEY (kategori_id) REFERENCES kategori(id)
     );
 
-    CREATE TABLE penjualan
+''';
+
+const String initQueryPembelian = '''
+  CREATE TABLE penjualan
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       tgl date NOT NULL,

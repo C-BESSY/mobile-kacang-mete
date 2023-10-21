@@ -28,8 +28,11 @@ class DBUtil {
     Database database = await sql.openDatabase(
       p.join(await sql.getDatabasesPath(), 'kacangMete.db'),
       onCreate: (db, version) async {
-        print('Creating item table...');
-        await db.execute(queryInitDb);
+        await db.execute(initQueryItem);
+        await db.execute(initQueryItemVarian);
+        await db.execute(initQueryKategori);
+        await db.execute(initQueryPenjualan);
+        await db.execute(initQueryPembelian);
       },
       version: 1,
     );
