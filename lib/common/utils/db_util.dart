@@ -1,11 +1,9 @@
 import 'dart:io' as io;
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:kacang_mete/common/constants/query_init_db.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -27,10 +25,10 @@ class DBUtil {
   }
 
   Future _initDatabaseMobile() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final database = await sql.openDatabase(
-      join(await sql.getDatabasesPath(), 'kacangMete.db'),
+    Database database = await sql.openDatabase(
+      p.join(await sql.getDatabasesPath(), 'kacangMete.db'),
       onCreate: (db, version) async {
+        print('Creating item table...');
         await db.execute(queryInitDb);
       },
       version: 1,
