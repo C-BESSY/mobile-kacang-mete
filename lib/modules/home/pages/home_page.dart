@@ -43,57 +43,60 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset('assets/images/logo.png'),
-                  ),
-                ),
-                Transform.translate(
-                  offset: Offset(-screenWidth * 0.085, 0),
-                  child: TextButton(
-                    onPressed: () {
-                      showMonthPicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                      ).then((date) {
-                        HomeRepository()
-                            .getOverview(date ?? _selectedDate)
-                            .then((value) =>
-                                setState(() => overviewData = value));
-                        HomeRepository()
-                            .getRecentTrasaction(date ?? _selectedDate)
-                            .then((value) {
-                          setState(() => recentTransaction = value);
-                        });
-                        setState(() {
-                          _selectedDate = date ?? _selectedDate;
-                        });
-                      });
-                    },
-                    style: const ButtonStyle(
-                        foregroundColor:
-                            MaterialStatePropertyAll(Colors.black)),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.expand_more_rounded,
-                          color: Color.fromARGB(255, 156, 7, 255),
-                        ),
-                        Text(dateTimeToMonth(_selectedDate)),
-                      ],
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.025),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset('assets/images/logo.png'),
                     ),
                   ),
-                ),
-                const SizedBox()
-              ],
+                  Transform.translate(
+                    offset: Offset(-screenWidth * 0.085, 0),
+                    child: TextButton(
+                      onPressed: () {
+                        showMonthPicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                        ).then((date) {
+                          HomeRepository()
+                              .getOverview(date ?? _selectedDate)
+                              .then((value) =>
+                                  setState(() => overviewData = value));
+                          HomeRepository()
+                              .getRecentTrasaction(date ?? _selectedDate)
+                              .then((value) {
+                            setState(() => recentTransaction = value);
+                          });
+                          setState(() {
+                            _selectedDate = date ?? _selectedDate;
+                          });
+                        });
+                      },
+                      style: const ButtonStyle(
+                          foregroundColor:
+                              MaterialStatePropertyAll(Colors.black)),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.expand_more_rounded,
+                            color: Color.fromARGB(255, 156, 7, 255),
+                          ),
+                          Text(dateTimeToMonth(_selectedDate)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox()
+                ],
+              ),
             ),
           ),
           CardOverviewWidget(

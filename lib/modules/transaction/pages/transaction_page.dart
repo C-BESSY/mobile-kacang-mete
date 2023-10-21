@@ -28,68 +28,71 @@ class _TransactionPageState extends State<TransactionPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.025),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton2<TransactionFilterEnum>(
-                      isExpanded: true,
-                      hint: Text(
-                        'Select Item',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
+          SafeArea(
+            bottom:false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.025),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<TransactionFilterEnum>(
+                        isExpanded: true,
+                        hint: Text(
+                          'Select Item',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).hintColor,
+                          ),
                         ),
-                      ),
-                      items: TransactionFilterEnum.values
-                          .map((TransactionFilterEnum item) =>
-                              DropdownMenuItem<TransactionFilterEnum>(
-                                value: item,
-                                child: Text(
-                                  capitalizeWord(item.name),
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        items: TransactionFilterEnum.values
+                            .map((TransactionFilterEnum item) =>
+                                DropdownMenuItem<TransactionFilterEnum>(
+                                  value: item,
+                                  child: Text(
+                                    capitalizeWord(item.name),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                ),
-                              ))
-                          .toList(),
-                      value: dropdownValue,
-                      onChanged: (TransactionFilterEnum? value) {
-                        setState(() {
-                          dropdownValue = value!;
-                        });
-                      },
-                      buttonStyleData: const ButtonStyleData(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        height: 40,
-                        width: 140,
-                      ),
-                      menuItemStyleData: const MenuItemStyleData(
-                        height: 40,
+                                ))
+                            .toList(),
+                        value: dropdownValue,
+                        onChanged: (TransactionFilterEnum? value) {
+                          setState(() {
+                            dropdownValue = value!;
+                          });
+                        },
+                        buttonStyleData: const ButtonStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          height: 40,
+                          width: 140,
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const Align(),
-                Visibility(
-                  visible: dropdownValue != TransactionFilterEnum.tahunan,
-                  child: TransactionFilter(
-                    filterMode: dropdownValue,
-                    selectedDate: _selectedDate,
-                    onFilterClicked: (date) {
-                      setState(() => _selectedDate = date);
-                    },
-                    onSortBySelected: (val) {
-                      setState(() => isNewest = val);
-                    },
-                    isNewest: isNewest,
+                  const Align(),
+                  Visibility(
+                    visible: dropdownValue != TransactionFilterEnum.tahunan,
+                    child: TransactionFilter(
+                      filterMode: dropdownValue,
+                      selectedDate: _selectedDate,
+                      onFilterClicked: (date) {
+                        setState(() => _selectedDate = date);
+                      },
+                      onSortBySelected: (val) {
+                        setState(() => isNewest = val);
+                      },
+                      isNewest: isNewest,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (dropdownValue == TransactionFilterEnum.harian)
