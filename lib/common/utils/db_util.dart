@@ -1,22 +1,44 @@
 import 'dart:io' as io;
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:kacang_mete/common/constants/query_init_db.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart' as sql;
 
 class DBUtil {
   Database? _db;
+
   Future<Database> get db async {
     if (_db != null) {
       return _db!;
     }
-    _db = await _initDatabase();
+
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      _db = await _initDatabaseDesktop();
+    } else {
+      _db = await _initDatabaseMobile();
+    }
     return _db!;
   }
 
-  Future _initDatabase() async {
+  Future _initDatabaseMobile() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final database = await sql.openDatabase(
+      join(await sql.getDatabasesPath(), 'kacangMete.db'),
+      onCreate: (db, version) async {
+        await db.execute(queryInitDb);
+      },
+      version: 1,
+    );
+    return database;
+  }
+
+  Future _initDatabaseDesktop() async {
     sqfliteFfiInit();
     var databaseFactory = databaseFactoryFfi;
     final io.Directory appDocumentsDir =
