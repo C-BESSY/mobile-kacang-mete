@@ -31,7 +31,6 @@ class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
   @override
   void initState() {
     super.initState();
-    print(widget.initalVarian?.varian ?? "g da");
   }
 
   @override

@@ -24,6 +24,7 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -32,41 +33,44 @@ class _TransactionPageState extends State<TransactionPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                DropdownButtonHideUnderline(
-                  child: DropdownButton2<TransactionFilterEnum>(
-                    isExpanded: true,
-                    hint: Text(
-                      'Select Item',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
+                Padding(
+                  padding: EdgeInsets.only(left: screenWidth * 0.025),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton2<TransactionFilterEnum>(
+                      isExpanded: true,
+                      hint: Text(
+                        'Select Item',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
+                        ),
                       ),
-                    ),
-                    items: TransactionFilterEnum.values
-                        .map((TransactionFilterEnum item) =>
-                            DropdownMenuItem<TransactionFilterEnum>(
-                              value: item,
-                              child: Text(
-                                capitalizeWord(item.name),
-                                style: const TextStyle(
-                                  fontSize: 14,
+                      items: TransactionFilterEnum.values
+                          .map((TransactionFilterEnum item) =>
+                              DropdownMenuItem<TransactionFilterEnum>(
+                                value: item,
+                                child: Text(
+                                  capitalizeWord(item.name),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                            ))
-                        .toList(),
-                    value: dropdownValue,
-                    onChanged: (TransactionFilterEnum? value) {
-                      setState(() {
-                        dropdownValue = value!;
-                      });
-                    },
-                    buttonStyleData: const ButtonStyleData(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      height: 40,
-                      width: 140,
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 40,
+                              ))
+                          .toList(),
+                      value: dropdownValue,
+                      onChanged: (TransactionFilterEnum? value) {
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
+                      buttonStyleData: const ButtonStyleData(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        height: 40,
+                        width: 140,
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        height: 40,
+                      ),
                     ),
                   ),
                 ),
