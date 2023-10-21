@@ -97,7 +97,10 @@ class _TransactionFilterState extends State<TransactionFilter> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () => debugPrint('should reset'),
+                            onPressed: () {
+                              tempFilterProvider.isNewest = widget.isNewest;
+                              tempFilterProvider.tempDate = widget.selectedDate;
+                            },
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(244, 224, 217, 217)),
