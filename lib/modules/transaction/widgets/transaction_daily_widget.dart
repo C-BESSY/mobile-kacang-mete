@@ -12,7 +12,12 @@ import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
 class TransactionDailyWidget extends StatefulWidget {
   final DateTime selectedDate;
-  const TransactionDailyWidget({super.key, required this.selectedDate});
+  final bool isNewest;
+  const TransactionDailyWidget({
+    super.key,
+    required this.selectedDate,
+    required this.isNewest,
+  });
 
   @override
   State<TransactionDailyWidget> createState() => _TransactionDailyWidgetState();
@@ -46,94 +51,110 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
     );
   }
 
-  Future<List<Widget>> get rows async {
-    List<Widget> data = [];
+  Column generateDailyDataCol(
+      int theDate, List<dynamic> dailyData, IncomeExpenseType overviewDaily) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.03,
+            horizontal: screenWidth * 0.025,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "$theDate ${dateTimeToMonth(widget.selectedDate)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: screenWidth * 0.035,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    intToIDR(overviewDaily.sumIncome),
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                  SizedBox(
+                    width: screenWidth * 0.025,
+                  ),
+                  Text(
+                    intToIDR(overviewDaily.sumExpense),
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+        ListView.separated(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: dailyData.length,
+          separatorBuilder: (context, index) =>
+              SizedBox(height: screenHeight * 0.02),
+          itemBuilder: (context, index) {
+            final item = dailyData[index];
+            if (item is PembelianType) {
+              return TransactionItemWidget(
+                type: TransactionType.pembelian,
+                item: item.kategori.name,
+                ammount: item.harga,
+                date: item.date,
+                primaryKey: item.id,
+              );
+            } else if (item is PenjualanType) {
+              return FutureBuilder<ItemType>(
+                future: item.varian.getItem(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    String itemName = snapshot.data!.name;
+                    return TransactionItemWidget(
+                      type: TransactionType.penjualan,
+                      item: "$itemName - ${item.varian.varian}",
+                      ammount: item.storedPrice,
+                      date: item.date,
+                      primaryKey: item.id,
+                    );
+                  }
+                },
+              );
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<List<Widget>> get rows async {
+    List<Widget> data = [];
+
     final dateEdge =
         await TransactionRepository().getTheEdgeOfDate(widget.selectedDate);
-    for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
-      List<dynamic> dailyData = await TransactionRepository().getDataDaily(
-          DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
-      IncomeExpenseType overviewDaily = generateDailyData(dailyData);
-      data.add(Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.03,
-              horizontal: screenWidth * 0.025,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "$i ${dateTimeToMonth(widget.selectedDate)}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: screenWidth * 0.035,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      intToIDR(overviewDaily.sumIncome),
-                      style: const TextStyle(color: Colors.green),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.025,
-                    ),
-                    Text(
-                      intToIDR(overviewDaily.sumExpense),
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemCount: dailyData.length,
-            separatorBuilder: (context, index) =>
-                SizedBox(height: screenHeight * 0.02),
-            itemBuilder: (context, index) {
-              final item = dailyData[index];
-              if (item is PembelianType) {
-                return TransactionItemWidget(
-                  type: TransactionType.pembelian,
-                  item: item.kategori.name,
-                  ammount: item.harga,
-                  date: item.date,
-                  primaryKey: item.id,
-                );
-              } else if (item is PenjualanType) {
-                return FutureBuilder<ItemType>(
-                  future: item.varian.getItem(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      String itemName = snapshot.data!.name;
-                      return TransactionItemWidget(
-                        type: TransactionType.penjualan,
-                        item: "$itemName - ${item.varian.varian}",
-                        ammount: item.storedPrice,
-                        date: item.date,
-                        primaryKey: item.id,
-                      );
-                    }
-                  },
-                );
-              }
-              return null;
-            },
-          ),
-        ],
-      ));
+    if (widget.isNewest) {
+      for (int i = dateEdge.theEnd; (i != 0 && i >= dateEdge.theStart); i--) {
+        List<dynamic> dailyData = await TransactionRepository().getDataDaily(
+            DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+        IncomeExpenseType overviewDaily = generateDailyData(dailyData);
+        data.add(generateDailyDataCol(i, dailyData, overviewDaily));
+      }
+    } else {
+      for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
+        List<dynamic> dailyData = await TransactionRepository().getDataDaily(
+            DateTime(widget.selectedDate.year, widget.selectedDate.month, i));
+        IncomeExpenseType overviewDaily = generateDailyData(dailyData);
+        data.add(generateDailyDataCol(i, dailyData, overviewDaily));
+      }
     }
+
     return data;
   }
 

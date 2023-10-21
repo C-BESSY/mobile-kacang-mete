@@ -19,6 +19,7 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   late DateTime _selectedDate = widget.paramDate ?? DateTime.now();
   late TransactionFilterEnum dropdownValue = TransactionFilterEnum.harian;
+  bool isNewest = true;
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +74,25 @@ class _TransactionPageState extends State<TransactionPage> {
                 Visibility(
                   visible: dropdownValue != TransactionFilterEnum.tahunan,
                   child: TransactionFilter(
-                      filterMode: dropdownValue,
-                      selectedDate: _selectedDate,
-                      onFilterClicked: (date) {
-                        setState(() => _selectedDate = date);
-                        setState(() {});
-                      }),
+                    filterMode: dropdownValue,
+                    selectedDate: _selectedDate,
+                    onFilterClicked: (date) {
+                      setState(() => _selectedDate = date);
+                      setState(() {});
+                    },
+                    onSortBySelected: (val) {
+                      setState(() => isNewest = val);
+                      setState(() {});
+                    },
+                    isNewest: isNewest,
+                  ),
                 ),
               ],
             ),
           ),
           if (dropdownValue == TransactionFilterEnum.harian)
             TransactionDailyWidget(
+              isNewest: isNewest,
               selectedDate: _selectedDate,
             ),
           if (dropdownValue == TransactionFilterEnum.mingguan)

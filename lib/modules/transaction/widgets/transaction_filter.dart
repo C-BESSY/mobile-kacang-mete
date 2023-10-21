@@ -10,11 +10,15 @@ class TransactionFilter extends StatefulWidget {
   final TransactionFilterEnum filterMode;
   final DateTime selectedDate;
   final Function(DateTime) onFilterClicked;
+  final Function(bool) onSortBySelected;
+  final bool isNewest;
   const TransactionFilter({
     super.key,
     required this.filterMode,
     required this.selectedDate,
     required this.onFilterClicked,
+    required this.onSortBySelected,
+    required this.isNewest,
   });
 
   @override
@@ -23,8 +27,8 @@ class TransactionFilter extends StatefulWidget {
 
 class _TransactionFilterState extends State<TransactionFilter> {
   late DateTime tempDate;
+  late bool tempIsNewest = widget.isNewest;
   DateEdge dateEdge = const DateEdge(theStart: 0, theEnd: 0);
-
   @override
   void initState() {
     super.initState();
@@ -105,33 +109,30 @@ class _TransactionFilterState extends State<TransactionFilter> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                debugPrint('Highest');
-                              },
-                              child: const Text('Highest',
-                                  style: TextStyle(color: Colors.black))),
-                          ElevatedButton(
-                              onPressed: () {
-                                debugPrint('Lowest');
-                              },
-                              child: const Text('Lowest',
-                                  style: TextStyle(color: Colors.black))),
-                          ElevatedButton(
-                              onPressed: () {
-                                debugPrint('Newest');
-                              },
-                              child: const Text('Newest',
-                                  style: TextStyle(color: Colors.black))),
-                          ElevatedButton(
-                              onPressed: () {
-                                debugPrint('Oldest');
-                              },
-                              child: const Text('Oldest',
-                                  style: TextStyle(color: Colors.black))),
+                          _SortByBtn(
+                            title: "Newest",
+                            onPressed: () =>
+                                setState(() => tempIsNewest = true),
+                            color: tempIsNewest
+                                ? Colors.purple.shade500
+                                : Colors.grey.shade300,
+                            textColor:
+                                tempIsNewest ? Colors.white : Colors.black,
+                          ),
+                          const SizedBox(height: 4),
+                          _SortByBtn(
+                            title: "Oldest",
+                            onPressed: () =>
+                                setState(() => tempIsNewest = false),
+                            color: !tempIsNewest
+                                ? Colors.purple.shade500
+                                : Colors.grey.shade300,
+                            textColor:
+                                !tempIsNewest ? Colors.white : Colors.black,
+                          ),
                         ],
                       ),
                     ),
@@ -196,6 +197,7 @@ class _TransactionFilterState extends State<TransactionFilter> {
                     child: ButtonWidget(
                       () {
                         widget.onFilterClicked(tempDate);
+                        widget.onSortBySelected(tempIsNewest);
                         Navigator.pop(context);
                       },
                     ),
@@ -213,4 +215,24 @@ class _TransactionFilterState extends State<TransactionFilter> {
       ),
     );
   }
+}
+
+class _SortByBtn extends ElevatedButton {
+  _SortByBtn({
+    required String title,
+    required VoidCallback onPressed,
+    required Color color,
+    required Color textColor,
+  }) : super(
+          onPressed: onPressed,
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(color),
+          ),
+          child: Container(
+            child: Text(
+              title,
+              style: TextStyle(color: textColor),
+            ),
+          ),
+        );
 }
