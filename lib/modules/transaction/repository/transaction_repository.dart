@@ -24,7 +24,7 @@ class TransactionRepository {
         WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${addZeroDigit(date.month)}';
         ''');
       if (query.first['tgl_awal'] == null || query.isEmpty) {
-        throw "Data masih kosong!";
+        throw "Transaction Edge Day: Data masih kosong!";
       }
       return DateEdge.forDaily(query.first);
     } catch (error) {
@@ -47,7 +47,7 @@ class TransactionRepository {
        WHERE strftime('%Y', tgl) = '$year'
     ''');
       if (query.first['bln_awal'] == null || query.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction Edge Month: Data masih kosong!";
       }
       return DateEdge.forMonthly(query.first);
     } catch (error) {
@@ -69,7 +69,7 @@ class TransactionRepository {
       )
     ''');
       if (query.first['thn_awal'] == null || query.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction Edge Year: Data masih kosong!";
       }
       return DateEdge.forYearly(query.first);
     } catch (error) {
@@ -117,7 +117,7 @@ class TransactionRepository {
       where tgl BETWEEN '${DateFormat("yyyy-MM-dd").format(startOfWeek)}' and '${DateFormat("yyyy-MM-dd").format(endOfWeek)}'
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction Weekly: Data masih kosong!";
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
@@ -143,7 +143,7 @@ class TransactionRepository {
        and strftime('%Y', tgl) = '$year'
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction Monthly: Data masih kosong!";
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
@@ -168,7 +168,7 @@ class TransactionRepository {
       where strftime('%Y', tgl) = '$year' 
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction Yearly: Data masih kosong!";
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
@@ -192,7 +192,7 @@ class TransactionRepository {
       )
     ''');
       if (database.first['total_pembelian'] == null || database.isEmpty) {
-        throw "Data masih kosong";
+        throw "Transaction all: Data masih kosong";
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {

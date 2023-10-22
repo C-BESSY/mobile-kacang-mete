@@ -27,12 +27,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    HomeRepository()
-        .getOverview(_selectedDate)
-        .then((value) => overviewData = value);
     HomeRepository().getRecentTrasaction(_selectedDate).then((value) {
       setState(() => recentTransaction = value);
     });
+  }
+
+  Future<Widget> get cardOverview async {
+    final OverviewData overviewData =
+        await HomeRepository().getOverview(_selectedDate);
+    return CardOverviewWidget(
+      overviewData: overviewData,
+      description: dateTimeToMonth(_selectedDate),
+    );
   }
 
   @override
@@ -67,10 +73,6 @@ class _HomePageState extends State<HomePage> {
                           initialDate: DateTime.now(),
                         ).then((date) {
                           HomeRepository()
-                              .getOverview(date ?? _selectedDate)
-                              .then((value) =>
-                                  setState(() => overviewData = value));
-                          HomeRepository()
                               .getRecentTrasaction(date ?? _selectedDate)
                               .then((value) {
                             setState(() => recentTransaction = value);
@@ -99,9 +101,17 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          CardOverviewWidget(
-            overviewData: overviewData,
-            description: "Account Balance",
+          FutureBuilder<Widget>(
+            future: cardOverview,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return snapshot.data ?? const SizedBox();
+              }
+            },
           ),
           Padding(
             padding: EdgeInsets.symmetric(
