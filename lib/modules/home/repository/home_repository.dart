@@ -33,7 +33,7 @@ class HomeRepository {
         ''');
       return await transactionMapping(rawData);
     } catch (error) {
-      print("Error : $error");
+      print(error);
       return [];
     }
   }

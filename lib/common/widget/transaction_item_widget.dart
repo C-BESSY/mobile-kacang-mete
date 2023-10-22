@@ -29,20 +29,20 @@ class TransactionItemWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: Text('Do you want to delete this item?'),
+          title: const Text('Confirm Delete'),
+          content: const Text('Do you want to delete this item?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // Confirmed
+                Navigator.of(context).pop(true);
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Not confirmed
+                Navigator.of(context).pop(false);
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
           ],
         );

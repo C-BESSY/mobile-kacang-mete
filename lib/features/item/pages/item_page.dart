@@ -24,7 +24,6 @@ class _ItemPageState extends State<ItemPage> {
       ? "-"
       : (_selectedItem! == "" ? "-" : _selectedItem!);
   bool isCreateNew = true;
-  bool isDelete = false;
   List<ItemVarianType> variants = [];
 
   Future save() async {

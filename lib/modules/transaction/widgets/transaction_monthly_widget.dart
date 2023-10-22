@@ -34,9 +34,9 @@ class _TransactionMonthlyWidgetState extends State<TransactionMonthlyWidget> {
 
   Future<List<Widget>> get rows async {
     List<Widget> data = [];
+    final screenWidth = MediaQuery.of(context).size.width;
     DateEdge dateEdge =
         await TransactionRepository().getTheEdgeOfMonth(widget.selectedYear);
-    final screenWidth = MediaQuery.of(context).size.width;
     for (int i = dateEdge.theStart; (i != 0 && i <= dateEdge.theEnd); i++) {
       IncomeExpenseType monthlyData = await TransactionRepository()
           .getMontlyIncomeExpense(i, widget.selectedYear);

@@ -4,7 +4,6 @@ import 'package:kacang_mete/common/types/input_type.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/widget/button_widget.dart';
 import 'package:kacang_mete/common/widget/centered_appbar.widget.dart';
-import 'package:kacang_mete/features/item/types/item_varian_type.dart';
 import 'package:kacang_mete/features/pembelian/repository/pembelian_repository.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 import 'package:kacang_mete/features/item/widgets/date_picker_widget.dart';
@@ -27,7 +26,6 @@ class _PembelianPageState extends State<PembelianPage> {
   KategoriType? _selectedKategori;
   String? newKategori;
   String selectedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  List<ItemVarianType> _availableItemJenis = [];
   late final List<InputType> inputList = [
     InputType("Kategori", TextInputType.text, _keterangan),
     InputType("Keterangan", TextInputType.text, _keterangan),
@@ -136,7 +134,7 @@ class _PembelianPageState extends State<PembelianPage> {
                     Form(
                       key: _formKey,
                       child: ListView.separated(
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: inputList.length,
                         separatorBuilder: (context, index) => SizedBox(

@@ -64,7 +64,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
           .then((data) async {
         final item = await data!.varian.getItem();
         setState(() {
-          selectedDate = data!.date;
+          selectedDate = data.date;
           _quantity.text = data.quantity.toString();
           _selectedVarian = data.varian;
           _selectedItem = item;

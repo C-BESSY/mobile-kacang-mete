@@ -54,15 +54,13 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                   SizedBox(height: screenHeight * 0.02),
               itemBuilder: (context, index) {
                 final inputData = inputList[index];
-                return TextFormField(
+                return TextField(
                   controller: inputData.textController,
                   keyboardType: inputData.inputType,
                   decoration: InputDecoration(
                     labelText: inputData.label,
                     border: const OutlineInputBorder(),
                   ),
-                  validator: (value) =>
-                      inputData.validator(inputData.label, value),
                 );
               },
             ),
