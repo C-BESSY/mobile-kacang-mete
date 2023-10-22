@@ -81,7 +81,11 @@ class ItemRepository {
         final currentVarian =
             await ItemVarianRepository().getVariansByItem(itemId: itemId);
         final deletedVarian = currentVarian
-            .where((variant) => !variants.contains(variant))
+            .where((variant) => !variants
+                .where((selVariant) => selVariant.id == variant.id)
+                .map((selVariant) => selVariant.id)
+                .toList()
+                .contains(variant.id))
             .toList();
         for (var deletedVar in deletedVarian) {
           await ItemVarianRepository()
