@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kacang_mete/features/item/pages/item_page.dart';
 import 'package:kacang_mete/features/pembelian/pages/pembelian_page.dart';
 import 'package:kacang_mete/features/penjualan/pages/penjualan_page.dart';
@@ -46,6 +47,7 @@ class _BasePageState extends State<BasePage> {
     super.initState();
     _pageController = PageController(initialPage: widget.isTransaction ? 2 : 0);
     _controller = NotchBottomBarController(index: widget.isTransaction ? 2 : 0);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   }
 
   @override
