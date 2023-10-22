@@ -133,11 +133,12 @@ class TransactionItemWidget extends StatelessWidget {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          item,
+                          truncateString(item, maxLength: 20),
                           style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              fontSize: 12,
-                              color: Colors.grey[600]),
+                            fontWeight: FontWeight.w100,
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ),
