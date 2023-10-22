@@ -20,10 +20,10 @@ class HomeRepository {
       final rawData = await db.runRawQuery('''
       SELECT *
         FROM (
-          SELECT id, tgl, true as is_pembelian
+          SELECT id, tgl, 1 as is_pembelian
           FROM pembelian
           UNION ALL
-          SELECT id, tgl, false
+          SELECT id, tgl, 0
           FROM penjualan
         )
         WHERE strftime('%Y', tgl) = '${date.year}' 
@@ -43,10 +43,10 @@ class HomeRepository {
       final rawData = await db.runRawQuery('''
       SELECT *
         FROM (
-          SELECT id, tgl, true as is_pembelian
+          SELECT id, tgl, 1 as is_pembelian
           FROM pembelian
           UNION ALL
-          SELECT id, tgl, false
+          SELECT id, tgl, 0
           FROM penjualan
         )
         order by tgl desc

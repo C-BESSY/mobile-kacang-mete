@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:path/path.dart' as p;
 
@@ -25,6 +26,7 @@ class DBUtil {
   }
 
   Future _initDatabaseMobile() async {
+    WidgetsFlutterBinding.ensureInitialized();
     Database database = await sql.openDatabase(
       p.join(await sql.getDatabasesPath(), 'kacangMete.db'),
       onCreate: (db, version) async {

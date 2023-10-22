@@ -15,10 +15,10 @@ class TransactionRepository {
       final query = await db.runRawQuery('''
         SELECT min(strftime('%d', tgl)) as tgl_awal, max(strftime('%d', tgl)) as tgl_akhir
         FROM (
-          SELECT id, tgl, true as is_pembelian
+          SELECT id, tgl, 1 as is_pembelian
           FROM pembelian
           UNION ALL
-          SELECT id, tgl, false
+          SELECT id, tgl, 0
           FROM penjualan
           )
         WHERE strftime('%Y', tgl) = '${date.year}' AND strftime('%m', tgl) = '${addZeroDigit(date.month)}';
@@ -38,10 +38,10 @@ class TransactionRepository {
       final query = await db.runRawQuery('''
       SELECT min(strftime('%m', tgl)) as bln_awal, max(strftime('%m', tgl)) as bln_akhir
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
        WHERE strftime('%Y', tgl) = '$year'
@@ -61,10 +61,10 @@ class TransactionRepository {
       final query = await db.runRawQuery('''
       SELECT min(strftime('%Y', tgl)) as thn_awal, max(strftime('%Y', tgl)) as thn_akhir
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
     ''');
@@ -83,10 +83,10 @@ class TransactionRepository {
       final query = await db.runRawQuery('''
       SELECT *
       FROM (
-        SELECT id, tgl, true as is_pembelian
+        SELECT id, tgl, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, false
+        SELECT id, tgl, 0
         FROM penjualan
       )
       WHERE strftime('%Y', tgl) = '${date.year}' 
@@ -108,10 +108,10 @@ class TransactionRepository {
        SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
        SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
       where tgl BETWEEN '${DateFormat("yyyy-MM-dd").format(startOfWeek)}' and '${DateFormat("yyyy-MM-dd").format(endOfWeek)}'
@@ -133,10 +133,10 @@ class TransactionRepository {
        SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
        SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
       where strftime('%m', tgl) = '${addZeroDigit(month)}'
@@ -159,10 +159,10 @@ class TransactionRepository {
        SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
        SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
       where strftime('%Y', tgl) = '$year' 
@@ -184,10 +184,10 @@ class TransactionRepository {
        SUM(CASE WHEN is_pembelian THEN harga ELSE 0 END) AS total_pembelian,
        SUM(CASE WHEN NOT is_pembelian THEN harga ELSE 0 END) AS total_penjualan
       FROM (
-        SELECT id, tgl, harga, true as is_pembelian
+        SELECT id, tgl, harga, 1 as is_pembelian
         FROM pembelian
         UNION ALL
-        SELECT id, tgl, stored_price, false
+        SELECT id, tgl, stored_price, 0
         FROM penjualan
       )
     ''');
