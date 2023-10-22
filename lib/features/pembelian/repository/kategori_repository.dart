@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/features/pembelian/types/kategori_type.dart';
 
@@ -13,7 +14,9 @@ class KategoriRepository {
       if (data != null) return KategoriType.fromDB(data);
       return null;
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return null;
     }
   }
@@ -25,7 +28,9 @@ class KategoriRepository {
       if (data != null) return KategoriType.fromDB(data);
       return null;
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return null;
     }
   }
@@ -33,10 +38,11 @@ class KategoriRepository {
   Future<List<KategoriType>> getKategoris() async {
     try {
       final datas = await db.getTableData(tableName);
-      print(datas);
       return datas.map((data) => KategoriType.fromDB(data)).toList();
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return [];
     }
   }
@@ -45,7 +51,9 @@ class KategoriRepository {
     try {
       return await db.insert("kategori", row: kategori.toMap());
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return 0;
     }
   }

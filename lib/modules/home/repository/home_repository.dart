@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
 import 'package:kacang_mete/common/utils/transaction_mapping.dart';
@@ -33,7 +34,9 @@ class HomeRepository {
         ''');
       return await transactionMapping(rawData);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return [];
     }
   }
@@ -55,7 +58,9 @@ class HomeRepository {
 
       return await transactionMapping(rawData);
     } catch (error) {
-      print("Error : $error");
+      if (kDebugMode) {
+        print(error);
+      }
       return [];
     }
   }

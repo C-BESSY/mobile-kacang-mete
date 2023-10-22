@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/widget/show_dialog_widget.dart';
@@ -18,7 +19,9 @@ class PembelianRepository {
       if (data != null) return PembelianType.fromDB(data);
       return null;
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return null;
     }
   }
@@ -48,7 +51,9 @@ class PembelianRepository {
           "Sukses ${pembelian.id == 0 ? 'Menambah' : 'Mengubah'} Pembelian");
       return true;
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       showErrorApi(context, error);
       return false;
     }
@@ -60,6 +65,9 @@ class PembelianRepository {
       showSuccessMessage(context, "Sukses Menghapus Pembelian");
       return true;
     } catch (error) {
+      if (kDebugMode) {
+        print(error);
+      }
       return false;
     }
   }

@@ -1,5 +1,4 @@
-// ignore_for_file: avoid_print
-
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:kacang_mete/common/utils/db_util.dart';
 import 'package:kacang_mete/common/utils/helper_util.dart';
@@ -28,7 +27,9 @@ class TransactionRepository {
       }
       return DateEdge.forDaily(query.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const DateEdge(theStart: 0, theEnd: 0);
     }
   }
@@ -51,7 +52,9 @@ class TransactionRepository {
       }
       return DateEdge.forMonthly(query.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const DateEdge(theStart: 0, theEnd: 0);
     }
   }
@@ -73,7 +76,9 @@ class TransactionRepository {
       }
       return DateEdge.forYearly(query.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const DateEdge(theStart: 0, theEnd: 0);
     }
   }
@@ -95,7 +100,9 @@ class TransactionRepository {
     ''');
       return await transactionMapping(query);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return [];
     }
   }
@@ -121,7 +128,9 @@ class TransactionRepository {
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
@@ -147,7 +156,9 @@ class TransactionRepository {
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
@@ -172,7 +183,9 @@ class TransactionRepository {
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
@@ -196,7 +209,9 @@ class TransactionRepository {
       }
       return IncomeExpenseType.fromDB(database.first);
     } catch (error) {
-      print(error);
+      if (kDebugMode) {
+        print(error);
+      }
       return const IncomeExpenseType(sumExpense: 0, sumIncome: 0);
     }
   }
