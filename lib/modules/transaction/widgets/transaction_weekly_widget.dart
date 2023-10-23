@@ -5,10 +5,12 @@ import 'package:kacang_mete/modules/home/repository/home_repository.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
 import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
+
 class TransactionWeeklyWidget extends StatefulWidget {
   final DateTime selectedDate;
+
   const TransactionWeeklyWidget({
-    super.key,
+    Key? key,
     required this.selectedDate,
   });
 
@@ -17,13 +19,20 @@ class TransactionWeeklyWidget extends StatefulWidget {
       _TransactionWeeklyWidgetState();
 }
 
+class Week {
+  DateTime startOfWeek;
+  DateTime endOfWeek;
+
+  Week(this.startOfWeek, this.endOfWeek);
+}
+
 class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
   @override
   void initState() {
     super.initState();
   }
 
-  Future<Widget> get cardOverview async {
+  Future<Widget> getCardOverview() async {
     final OverviewData overviewData =
         await HomeRepository().getOverview(widget.selectedDate);
     return CardOverviewWidget(
@@ -32,15 +41,31 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
     );
   }
 
-  List<DateTime> _calculateWeekStartDates(DateTime currentDate) {
-    List<DateTime> weekStartDates = [];
-    DateTime firstDayOfMonth = DateTime(currentDate.year, currentDate.month, 1);
+  List<Week> _calculateWeeksInMonth(DateTime currentDate) {
+    List<Week> weeks = [];
+    int year = currentDate.year;
+    int month = currentDate.month;
+    int currentDay = 1;
+    DateTime firstDayOfMonth = DateTime(year, month, currentDay);
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
 
-    while (currentDate.month == firstDayOfMonth.month) {
-      weekStartDates.add(firstDayOfMonth);
-      firstDayOfMonth = firstDayOfMonth.add(const Duration(days: 7));
+    while (currentDay <= lastDayOfMonth.day) {
+      DateTime startOfWeek = firstDayOfMonth;
+      while (startOfWeek.weekday != DateTime.monday) {
+        startOfWeek = startOfWeek.subtract(const Duration(days: 1));
+      }
+
+      DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
+      if (endOfWeek.isAfter(lastDayOfMonth)) {
+        endOfWeek = lastDayOfMonth;
+      }
+
+      weeks.add(Week(startOfWeek, endOfWeek));
+      currentDay = endOfWeek.day + 1;
+      firstDayOfMonth = endOfWeek.add(const Duration(days: 1));
     }
-    return weekStartDates;
+
+    return weeks;
   }
 
   final TransactionRepository transactionRepository = TransactionRepository();
@@ -49,13 +74,12 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final weekStartDates = _calculateWeekStartDates(widget.selectedDate);
-    final numberOfWeeks = weekStartDates.length;
+    final weeksInMonth = _calculateWeeksInMonth(widget.selectedDate);
 
     return Column(
       children: [
         FutureBuilder<Widget>(
-          future: cardOverview,
+          future: getCardOverview(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
@@ -66,82 +90,77 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
             }
           },
         ),
-        ...List.generate(
-          numberOfWeeks,
-          (weekIndex) {
-            final weekNumber = weekIndex + 1;
-            final startDate = weekStartDates[weekIndex];
-            final endDate = weekIndex < weekStartDates.length - 1
-                ? weekStartDates[weekIndex + 1]
-                    .subtract(const Duration(days: 1))
-                : DateTime(startDate.year, startDate.month, startDate.day + 6);
+        for (int weekIndex = 0; weekIndex < weeksInMonth.length; weekIndex++) 
+          FutureBuilder<IncomeExpenseType>(
+            future: transactionRepository.getWeeklyIncomeExpense(
+              weeksInMonth[weekIndex].startOfWeek,
+              weeksInMonth[weekIndex].endOfWeek,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                final incomeExpense = snapshot.data;
+                final week = weeksInMonth[weekIndex];
+                final weekNumber = weekIndex + 1;
+                final startDate = week.startOfWeek;
+                final endDate = week.endOfWeek;
+                final dateRange =
+                    "${startDate.day} ${getMonthName(startDate.month)} - ${endDate.day} ${getMonthName(endDate.month)}";
 
-            final dateRange =
-                "${startDate.day} ${getMonthName(startDate.month)} - ${endDate.day} ${getMonthName(endDate.month)}";
-
-            return FutureBuilder<IncomeExpenseType>(
-              future: transactionRepository.getWeeklyIncomeExpense(
-                  startDate, endDate),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final incomeExpense = snapshot.data;
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: screenHeight * 0.03,
-                          horizontal: screenWidth * 0.025,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Week $weekNumber",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: screenWidth * 0.035,
-                                  ),
-                                ),
-                                Text(
-                                  dateRange,
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.03,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  intToIDR(incomeExpense!.sumIncome),
-                                  style: const TextStyle(color: Colors.green),
-                                ),
-                                SizedBox(
-                                  width: screenWidth * 0.025,
-                                ),
-                                Text(
-                                  intToIDR(incomeExpense.sumExpense),
-                                  style: const TextStyle(color: Colors.red),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                return Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.03,
+                        horizontal: screenWidth * 0.025,
                       ),
-                    ],
-                  );
-                }
-              },
-            );
-          },
-        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Week $weekNumber",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: screenWidth * 0.035,
+                                ),
+                              ),
+                              Text(
+                                dateRange,
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.03,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                intToIDR(incomeExpense!.sumIncome),
+                                style: const TextStyle(color: Colors.green),
+                              ),
+                              SizedBox(
+                                width: screenWidth * 0.025,
+                              ),
+                              Text(
+                                intToIDR(incomeExpense.sumExpense),
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
       ],
     );
   }
