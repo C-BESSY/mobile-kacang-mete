@@ -51,7 +51,7 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
 
     while (currentDay <= lastDayOfMonth.day) {
       DateTime startOfWeek = firstDayOfMonth;
-      while (startOfWeek.weekday != DateTime.monday) {
+      while (startOfWeek.weekday != DateTime.sunday) {
         startOfWeek = startOfWeek.subtract(const Duration(days: 1));
       }
 
