@@ -47,11 +47,11 @@ class _BasePageState extends State<BasePage> {
     super.initState();
     _pageController = PageController(initialPage: widget.isTransaction ? 2 : 0);
     _controller = NotchBottomBarController(index: widget.isTransaction ? 2 : 0);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
