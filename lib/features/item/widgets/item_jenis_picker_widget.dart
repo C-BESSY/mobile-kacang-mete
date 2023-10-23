@@ -36,10 +36,11 @@ class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return TypeAheadFormField(
+      hideKeyboard: true,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _selectedItem,
         decoration: const InputDecoration(
-          labelText: "Pilih Jenis",
+          labelText: "Pilih Varian",
           border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.search),
         ),
@@ -62,7 +63,7 @@ class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
         widget.onSelected(suggestion);
         _selectedItem.text = suggestion.varian;
       },
-      validator: (value) => InputType.validatedInput("Jenis", value),
+      validator: (value) => InputType.validatedInput("Varian", value),
     );
   }
 }
