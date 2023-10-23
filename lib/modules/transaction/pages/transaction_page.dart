@@ -29,7 +29,7 @@ class _TransactionPageState extends State<TransactionPage> {
       child: Column(
         children: [
           SafeArea(
-            bottom:false,
+            bottom: false,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: screenHeight * 0.025),
               child: Row(
@@ -101,15 +101,24 @@ class _TransactionPageState extends State<TransactionPage> {
               selectedDate: _selectedDate,
             ),
           if (dropdownValue == TransactionFilterEnum.mingguan)
-            TransactionWeeklyWidget(
-              selectedDate: _selectedDate,
+            SizedBox(
+              height: screenHeight,
+              child: TransactionWeeklyWidget(
+                selectedDate: _selectedDate,
+              ),
             ),
           if (dropdownValue == TransactionFilterEnum.bulanan)
-            TransactionMonthlyWidget(
-              selectedYear: _selectedDate.year,
+            SizedBox(
+              height: screenHeight,
+              child: TransactionMonthlyWidget(
+                selectedYear: _selectedDate.year,
+              ),
             ),
           if (dropdownValue == TransactionFilterEnum.tahunan)
-            const TransactionYearlyWidget(),
+            SizedBox(
+              height: screenHeight,
+              child: const TransactionYearlyWidget(),
+            ),
         ],
       ),
     );

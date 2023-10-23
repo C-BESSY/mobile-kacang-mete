@@ -5,7 +5,6 @@ import 'package:kacang_mete/modules/home/repository/home_repository.dart';
 import 'package:kacang_mete/modules/transaction/repository/transaction_repository.dart';
 import 'package:kacang_mete/modules/transaction/types/income_expense_type.dart';
 
-
 class TransactionWeeklyWidget extends StatefulWidget {
   final DateTime selectedDate;
 
@@ -90,7 +89,7 @@ class _TransactionWeeklyWidgetState extends State<TransactionWeeklyWidget> {
             }
           },
         ),
-        for (int weekIndex = 0; weekIndex < weeksInMonth.length; weekIndex++) 
+        for (int weekIndex = 0; weekIndex < weeksInMonth.length; weekIndex++)
           FutureBuilder<IncomeExpenseType>(
             future: transactionRepository.getWeeklyIncomeExpense(
               weeksInMonth[weekIndex].startOfWeek,
