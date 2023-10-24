@@ -35,6 +35,7 @@ class _ItemPickerWidgetState extends State<ItemPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return TypeAheadFormField(
+      hideSuggestionsOnKeyboardHide: false,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _selectedItem,
         onChanged: (value) =>

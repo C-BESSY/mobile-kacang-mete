@@ -35,6 +35,7 @@ class _KategoryPickerWidgetState extends State<KategoryPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return TypeAheadFormField(
+      hideSuggestionsOnKeyboardHide: false,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _selectedItem,
         decoration: const InputDecoration(
