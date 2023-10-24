@@ -52,7 +52,10 @@ class _TransactionDailyWidgetState extends State<TransactionDailyWidget> {
   }
 
   Column generateDailyDataCol(
-      int theDate, List<dynamic> dailyData, IncomeExpenseType overviewDaily) {
+    int theDate,
+    List<dynamic> dailyData,
+    IncomeExpenseType overviewDaily,
+  ) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
