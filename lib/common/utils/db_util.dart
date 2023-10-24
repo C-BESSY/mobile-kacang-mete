@@ -31,8 +31,11 @@ class DBUtil {
       p.join(await sql.getDatabasesPath(), 'kacangMete.db'),
       onCreate: (db, version) async {
         await db.execute(initQueryItem);
+        await db.execute(initQueryDefaultItem);
         await db.execute(initQueryItemVarian);
+        await db.execute(initQueryDefaultItemVarian);
         await db.execute(initQueryKategori);
+        await db.execute(initQueryDefaultKategori);
         await db.execute(initQueryPenjualan);
         await db.execute(initQueryPembelian);
       },

@@ -1,7 +1,10 @@
 String queryInitDb = '''
  $initQueryItem
+ $initQueryDefaultItem
  $initQueryItemVarian
+ $initQueryDefaultItemVarian
  $initQueryKategori
+ $initQueryDefaultKategori
  $initQueryPenjualan
  $initQueryPembelian 
 ''';
@@ -14,6 +17,12 @@ const String initQueryItem = '''
     );
 ''';
 
+const String initQueryDefaultItem = '''
+  INSERT INTO item(id, name) values
+    (1, "Kacang Mete"),
+    (2, "Kacang Tanah");
+''';
+
 const String initQueryItemVarian = '''
  CREATE TABLE item_varian
     (
@@ -24,6 +33,17 @@ const String initQueryItemVarian = '''
       FOREIGN KEY (item_id) REFERENCES item(id)
     );
 ''';
+
+const initQueryDefaultItemVarian = '''
+  INSERT INTO item_varian (varian, harga, item_id) VALUES
+    ('1/4', 20000, 1),
+    ('1/2', 30000, 1),
+    ('1/2', 40000, 1);
+  INSERT INTO item_varian (varian, harga, item_id) VALUES
+    ('1/2', 15000, 2),
+    ('1', 25000, 2);
+''';
+
 const String initQueryKategori = '''
   CREATE TABLE kategori
     (
@@ -31,6 +51,16 @@ const String initQueryKategori = '''
       name VARCHAR(150) NOT NULL
     );
 ''';
+
+const String initQueryDefaultKategori = '''
+  INSERT INTO kategori(name) VALUES
+    ('Pembelian Kacang Mete Glondongan'),
+    ('Minyak Goreng'),
+    ('Plastik Kemasan'),
+    ('Bumbu'),
+    ('Transport');
+''' ;
+
 const String initQueryPenjualan = '''
  CREATE TABLE pembelian
     (
