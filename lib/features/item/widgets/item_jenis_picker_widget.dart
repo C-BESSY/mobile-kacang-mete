@@ -36,7 +36,8 @@ class _ItemJenisPickerWidgetState extends State<ItemJenisPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return TypeAheadFormField(
-      hideKeyboard: true,
+      direction: AxisDirection.up,
+      hideKeyboard: false,
       textFieldConfiguration: TextFieldConfiguration(
         controller: _selectedItem,
         decoration: const InputDecoration(
