@@ -174,6 +174,7 @@ class _ItemPageState extends State<ItemPage> {
                           ),
                           if (variants.isNotEmpty)
                             ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: variants.length,
                               separatorBuilder: (context, index) =>
