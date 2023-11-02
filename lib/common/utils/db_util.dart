@@ -34,6 +34,7 @@ class DBUtil {
         await db.execute(initQueryDefaultItem);
         await db.execute(initQueryItemVarian);
         await db.execute(initQueryDefaultItemVarian);
+        await db.execute(initQueryDefaultItemVarianKacangTanah);
         await db.execute(initQueryKategori);
         await db.execute(initQueryDefaultKategori);
         await db.execute(initQueryPenjualan);

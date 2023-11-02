@@ -3,6 +3,7 @@ String queryInitDb = '''
  $initQueryDefaultItem
  $initQueryItemVarian
  $initQueryDefaultItemVarian
+ $initQueryDefaultItemVarianKacangTanah
  $initQueryKategori
  $initQueryDefaultKategori
  $initQueryPenjualan
@@ -36,12 +37,15 @@ const String initQueryItemVarian = '''
 
 const initQueryDefaultItemVarian = '''
   INSERT INTO item_varian (varian, harga, item_id) VALUES
-    ('1/4', 20000, 1),
-    ('1/2', 30000, 1),
-    ('1/2', 40000, 1);
+    ('1/4 kg', 20000, 1),
+    ('1/2 kg', 30000, 1),
+    ('1 kg', 40000, 1);
+''';
+
+const initQueryDefaultItemVarianKacangTanah = '''
   INSERT INTO item_varian (varian, harga, item_id) VALUES
-    ('1/2', 15000, 2),
-    ('1', 25000, 2);
+    ('1/2 kg', 15000, 2),
+    ('1 kg', 25000, 2);
 ''';
 
 const String initQueryKategori = '''
@@ -59,7 +63,7 @@ const String initQueryDefaultKategori = '''
     ('Plastik Kemasan'),
     ('Bumbu'),
     ('Transport');
-''' ;
+''';
 
 const String initQueryPenjualan = '''
  CREATE TABLE pembelian
