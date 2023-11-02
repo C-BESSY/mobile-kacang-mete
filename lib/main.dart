@@ -1,3 +1,4 @@
+import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kacang_mete/common/page/base_page.dart';
@@ -31,7 +32,15 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const BasePage(),
+        home: FlutterSplashScreen.fadeIn(
+          backgroundColor: Colors.white,
+          childWidget: SizedBox(
+            height: 200,
+            width: 200,
+            child: Image.asset("assets/icons/logo.png"),
+          ),
+          nextScreen: const BasePage(),
+        ),
       ),
     );
   }
